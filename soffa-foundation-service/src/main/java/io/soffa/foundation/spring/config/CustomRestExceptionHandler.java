@@ -32,7 +32,7 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Environment environment;
     //private final MeterRegistry meterRegistry;
-    private static final Logger LOG = Logger.create(CustomRestExceptionHandler.class);
+    private static final Logger LOG = Logger.get(CustomRestExceptionHandler.class);
 
     @Autowired
     public CustomRestExceptionHandler(Environment environment) {

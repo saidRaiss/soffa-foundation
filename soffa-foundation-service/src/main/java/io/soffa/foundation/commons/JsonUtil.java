@@ -28,7 +28,7 @@ import java.util.*;
 
 public final class JsonUtil {
 
-    private static final Logger LOGGER = Logger.create(JsonUtil.class);
+    private static final Logger LOGGER = Logger.get(JsonUtil.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Primary;
 @Configuration
 public class RabbitMQConfig {
 
-    private static final Logger LOG = Logger.create(RabbitMQConfig.class);
+    private static final Logger LOG = Logger.get(RabbitMQConfig.class);
     static boolean embeddedMode;
 
     @Value("${spring.application.name}")

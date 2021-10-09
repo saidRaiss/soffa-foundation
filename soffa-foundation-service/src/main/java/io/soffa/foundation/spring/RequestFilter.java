@@ -35,7 +35,7 @@ import java.util.Optional;
 @NoArgsConstructor
 public class RequestFilter extends OncePerRequestFilter {
 
-    private final Logger logger = Logger.create(RequestFilter.class);
+    private final Logger logger = Logger.get(RequestFilter.class);
     private JwtDecoder jwtDecoder;
 
     public RequestFilter(@Autowired(required = false) JwtDecoder jwtDecoder) {

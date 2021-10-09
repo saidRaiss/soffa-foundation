@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 @Configuration
 public class DatasourceConfig {
 
-    private static final Logger LOG = Logger.create(DatasourceConfig.class);
+    private static final Logger LOG = Logger.get(DatasourceConfig.class);
 
     @Bean
     @Primary

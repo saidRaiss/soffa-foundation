@@ -91,11 +91,11 @@ public class Logger {
         }
     }
 
-    public static Logger create(Class<?> type) {
+    public static Logger get(Class<?> type) {
         return new Logger(LoggerFactory.getLogger(type));
     }
 
-    public static Logger create(String name) {
+    public static Logger get(String name) {
         return new Logger(LoggerFactory.getLogger(name));
     }
 

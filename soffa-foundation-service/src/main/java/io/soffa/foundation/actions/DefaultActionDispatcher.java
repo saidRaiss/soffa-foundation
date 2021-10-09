@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 
 public class DefaultActionDispatcher implements ActionDispatcher {
 
-    private static final Logger LOG = Logger.create(DefaultActionDispatcher.class);
+    private static final Logger LOG = Logger.get(DefaultActionDispatcher.class);
     private final Set<Action<?, ?>> registry;
     private final Set<Action0<?>> registry0;
     private final Map<String, Object> actionsMapping = new HashMap<>();

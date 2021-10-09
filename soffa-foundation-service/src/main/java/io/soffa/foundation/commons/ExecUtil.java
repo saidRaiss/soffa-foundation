@@ -4,7 +4,7 @@ import io.soffa.foundation.logging.Logger;
 
 public final class ExecUtil {
 
-    private static final Logger LOG = Logger.create(ExecUtil.class);
+    private static final Logger LOG = Logger.get(ExecUtil.class);
 
     private ExecUtil() {
     }

@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class PubSubListenerConfig {
 
-    private static final Logger LOG = Logger.create(PubSubListenerConfig.class);
+    private static final Logger LOG = Logger.get(PubSubListenerConfig.class);
     private final PubSubListener listener;
 
     public PubSubListenerConfig(@Autowired(required = false) PubSubListener listener) {

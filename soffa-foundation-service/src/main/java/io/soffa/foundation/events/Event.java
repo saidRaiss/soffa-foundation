@@ -19,7 +19,7 @@ import java.util.Optional;
 public class Event implements Serializable {
 
     public static final long serialVersionUID = -2355203729601016346L;
-    private static final Logger LOG = Logger.create(Event.class);
+    private static final Logger LOG = Logger.get(Event.class);
     private String id;
     private String action;
     private Object payload;

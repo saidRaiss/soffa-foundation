@@ -21,7 +21,7 @@ import java.util.Map;
 
 public final class JwtUtil {
 
-    private static final Logger LOG = Logger.create(JwtUtil.class);
+    private static final Logger LOG = Logger.get(JwtUtil.class);
 
     private JwtUtil() {
     }

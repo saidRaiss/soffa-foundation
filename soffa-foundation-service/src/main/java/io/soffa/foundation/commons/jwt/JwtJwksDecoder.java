@@ -24,7 +24,7 @@ import java.util.Set;
 
 public class JwtJwksDecoder implements JwtDecoder {
 
-    private static final Logger LOG = Logger.create(JwtJwksDecoder.class);
+    private static final Logger LOG = Logger.get(JwtJwksDecoder.class);
     private final ConfigurableJWTProcessor<SecurityContext> jwtProcessor;
 
     @SneakyThrows

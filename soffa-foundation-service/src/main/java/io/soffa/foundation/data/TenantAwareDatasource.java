@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TenantAwareDatasource extends AbstractRoutingDataSource implements ApplicationListener<ContextRefreshedEvent> {
 
-    private static final Logger LOG = Logger.create(TenantAwareDatasource.class);
+    private static final Logger LOG = Logger.get(TenantAwareDatasource.class);
     private final Map<Object, Object> dataSources = new ConcurrentHashMap<>();
     private final ResourceLoader resourceLoader = new DefaultResourceLoader();
     private final String tablesPrefix;

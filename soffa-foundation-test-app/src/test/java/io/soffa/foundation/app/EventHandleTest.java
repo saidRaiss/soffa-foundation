@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(properties = {"app.sys-logs.enabled=true"})
@@ -32,25 +34,32 @@ public class EventHandleTest {
         TenantId t1 = new TenantId("T1");
         TenantId t2 = new TenantId("T2");
 
-        TenantHolder.set(t1);
-        long t1InitialCount = sysLogs.count();
+        AtomicLong t1InitialCount = new AtomicLong();
 
         String actionName = "PingAction";
-        dispatcher.handle(new Event(actionName)); // automatic tenant
-        dispatcher.handle(new Event("EchoAction", "Hello"));
-        dispatcher.handle(new Event(actionName).withTenant(t1)); // explicit tenant
-
-        TenantHolder.set(t2);
-        long t2InitialCount = sysLogs.count();
-        Assertions.assertThrows(FakeException.class, () -> {
-            dispatcher.handle(new Event(actionName));
+        TenantHolder.run(t1, () -> {
+            t1InitialCount.set(sysLogs.count());
+            dispatcher.handle(new Event(actionName)); // automatic tenant
+            dispatcher.handle(new Event("EchoAction", "Hello"));
+            dispatcher.handle(new Event(actionName).withTenant(t1)); // explicit tenant
         });
 
-        TenantHolder.set(t1);
-        assertEquals(t1InitialCount + 3, sysLogs.count());
+        AtomicLong t2InitialCount = new AtomicLong();
 
-        TenantHolder.set(t2);
-        assertEquals(t2InitialCount + 1, sysLogs.count());
+        TenantHolder.run(t2, () -> {
+            t2InitialCount.set(sysLogs.count());
+            Assertions.assertThrows(FakeException.class, () -> {
+                dispatcher.handle(new Event(actionName));
+            });
+        });
+
+        TenantHolder.run(t1, () -> {
+            assertEquals(t1InitialCount.get() + 3, sysLogs.count());
+        });
+
+        TenantHolder.run(t2, () -> {
+            assertEquals(t2InitialCount.get() + 1, sysLogs.count());
+        });
     }
 
 

@@ -69,6 +69,11 @@ public final class TenantHolder {
 
     @SneakyThrows
     public static void run(final String tenantId, Runnable runnable) {
+        run(new TenantId(tenantId), runnable);
+    }
+
+    @SneakyThrows
+    public static void run(final TenantId tenantId, Runnable runnable) {
         CountDownLatch latch = new CountDownLatch(1);
         SC.submit(() -> {
             TenantHolder.set(tenantId);

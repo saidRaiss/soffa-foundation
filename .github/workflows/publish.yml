@@ -5,12 +5,6 @@ on:
     branches: [ master ]
 
 env:
-  MAVEN_PUBLISHING_USER: ${{ github.actor }}
-  MAVEN_PUBLISHING_PASSWORD: ${{ secrets.ARTIFACTS_TOKEN }}
-  MAVEN_PUBLISHING_URL: https://maven.pkg.github.com/soffa-io/artifacts
-  PRV_MAVEN_URL: https://maven.pkg.github.com/soffa-io/artifacts
-  PRV_MAVEN_USER: ${{ github.actor }}
-  PRV_MAVEN_PASSWORD: ${{ secrets.ARTIFACTS_TOKEN }}
   SONATYPE_USERNAME: ${{ secrets.OSSRH_USERNAME }}
   SONATYPE_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
   SIGNING_KEYID: ${{ secrets.OSSRH_SIGNING_KEYID }}
@@ -28,26 +22,12 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Run checks
-        run: gradle classes \
-          -Psonatype=true \
+        run: gradle check \
           -PossrhUsername=$SONATYPE_USERNAME \
           -PossrhPassword=$SONATYPE_PASSWORD \
           -Psigning.keyId=$SIGNING_KEYID  \
           -Psigning.password=$SIGNING_PASSWORD \
           -Psigning.secretKeyRingFile=$HOME/.sonatype-keys.gpg
-
-  publish-to-github:
-    needs: check
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v2
-      - name: Publish artifact to Github
-        run: |
-          ls -alr
-          gradle publish -x test
 
   publish-to-sonatype:
     needs: check

@@ -30,14 +30,14 @@ public class SysLogTests {
         HttpExpect test = new HttpExpect(mvc);
 
         long initialCount = sysLogs.count();
-        test.get("/ping").expect().isOK().contentIs("PONG");
+        test.get("/ping").expect().isOK().json("$.value", "PONG");
 
         assertEquals(initialCount + 1, sysLogs.count());
 
         test.get("/ping").
             header(ApiHeaders.TENANT_ID, "T1").
             header(ApiHeaders.APPLICATION, "Demo").
-            expect().isOK().contentIs("PONG");
+            expect().isOK().json("$.value", "PONG");
 
         assertEquals(initialCount + 2, sysLogs.count());
     }

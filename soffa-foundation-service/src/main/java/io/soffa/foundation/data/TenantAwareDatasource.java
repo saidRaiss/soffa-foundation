@@ -108,20 +108,21 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         return new HikariDataSource(hc);
     }
 
-    public void applyMigrations() {
-        String changeLog = "/db/changelog/" + appicationName + ".xml";
-        for (Object value : dataSources.values()) {
-            if (value instanceof HikariDataSource) {
-                applyMigrations((DataSource) value, changeLog);
+    public void applyMigrations(DbMigration source) {
+        for (String changeLogPath : source.getSources()) {
+            Resource res = resourceLoader.getResource(changeLogPath);
+            if (!res.exists()) {
+                throw new TechnicalException("Liquibase changeLog was not found: %s", changeLogPath);
+            }
+            for (Object value : dataSources.values()) {
+                if (value instanceof HikariDataSource) {
+                    applyMigrations((DataSource) value, changeLogPath);
+                }
             }
         }
     }
 
     public void applyMigrations(DataSource dataSource, String changeLogPath) {
-        Resource res = resourceLoader.getResource(changeLogPath);
-        if (!res.exists()) {
-            throw new TechnicalException("Liquibase changeLog was not found: %s", changeLogPath);
-        }
         SpringLiquibase lqb = new SpringLiquibase();
         lqb.setChangeLog(changeLogPath);
         lqb.setDropFirst(false);

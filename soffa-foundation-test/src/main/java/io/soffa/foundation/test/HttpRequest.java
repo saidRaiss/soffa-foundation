@@ -2,6 +2,7 @@ package io.soffa.foundation.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -10,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 public class HttpRequest {
@@ -36,9 +38,20 @@ public class HttpRequest {
         ResultActions result = mvc.perform(req);
         return new HttpResult(result);
     }
+
     @SneakyThrows
     public HttpRequest withJson(Object any) {
         body = new ObjectMapper().writeValueAsString(any);
+        return this;
+    }
+
+    public HttpRequest withTenant(String tenantId) {
+        return header("X-TenantId", tenantId);
+    }
+
+    public HttpRequest withTrace(String spanId, String traceId) {
+        header("X-SpanId", spanId);
+        header("X-TraceId", traceId);
         return this;
     }
 
@@ -46,6 +59,14 @@ public class HttpRequest {
         header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
         return this;
     }
+
+    public HttpRequest basicAuth(String username, String password) {
+        final String pair = username + ":" + password;
+        final byte[] encodedBytes = Base64.encodeBase64(pair.getBytes(StandardCharsets.UTF_8));
+        header(HttpHeaders.AUTHORIZATION, "Basic " + new String(encodedBytes));
+        return this;
+    }
+
     public HttpRequest header(String name, String value) {
         headers.put(name, Collections.singletonList(value));
         return this;

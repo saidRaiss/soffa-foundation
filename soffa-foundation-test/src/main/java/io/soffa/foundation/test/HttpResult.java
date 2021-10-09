@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.SneakyThrows;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -85,6 +86,13 @@ public class HttpResult {
         result.andExpect(jsonPath(path).value(matcher));
         return this;
     }
+
+    @SneakyThrows
+    public HttpResult json(String path, String value) {
+        result.andExpect(jsonPath(path).value(Matchers.equalTo(value)));
+        return this;
+    }
+
     @SneakyThrows
     public <T> T read(Class<T> expectedClass) {
         return MAPPER.readValue(result.andReturn().getResponse().getContentAsString(), expectedClass);

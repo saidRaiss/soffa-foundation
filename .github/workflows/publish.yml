@@ -22,7 +22,7 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Run checks
-        run: gradle check \
+        run: gradle test \
           -PossrhUsername=$SONATYPE_USERNAME \
           -PossrhPassword=$SONATYPE_PASSWORD \
           -Psigning.keyId=$SIGNING_KEYID  \

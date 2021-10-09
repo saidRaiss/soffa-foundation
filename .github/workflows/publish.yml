@@ -22,12 +22,11 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Run checks
-        run: gradle test \
-          -PossrhUsername=$SONATYPE_USERNAME \
-          -PossrhPassword=$SONATYPE_PASSWORD \
-          -Psigning.keyId=$SIGNING_KEYID  \
-          -Psigning.password=$SIGNING_PASSWORD \
-          -Psigning.secretKeyRingFile=$HOME/.sonatype-keys.gpg
+        run: |
+          gradle test \
+            -PossrhUsername=foo -PossrhPassword=foo \
+            -Psigning.keyId=foo -Psigning.password=foo \
+            -Psigning.secretKeyRingFile=foo
 
   publish-to-sonatype:
     needs: check

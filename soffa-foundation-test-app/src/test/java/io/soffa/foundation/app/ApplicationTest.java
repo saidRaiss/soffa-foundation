@@ -28,7 +28,7 @@ public class ApplicationTest {
     @Test
     public void testActuator() {
         HttpExpect test = new HttpExpect(mvc);
-        test.get("/actuator/health").expect().isOK().json("$.status", equalTo("UP"));
+        test.get("/actuator/health").expect().isOK().json("$.status", "UP");
     }
 
     @Test
@@ -39,7 +39,7 @@ public class ApplicationTest {
             header("X-TenantId", "T1").
             header("X-TraceId", IDs.shortUUID("trace-")).
             header("X-SpanId", IDs.shortUUID("span-")).
-            expect().isOK().json("value", equalTo("PONG"));
+            expect().isOK().json("$.value", "PONG");
     }
 
     @Test

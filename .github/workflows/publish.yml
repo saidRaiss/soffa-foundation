@@ -26,7 +26,8 @@ jobs:
           gradle test \
             -PossrhUsername=foo -PossrhPassword=foo \
             -Psigning.keyId=foo -Psigning.password=foo \
-            -Psigning.secretKeyRingFile=foo
+            -Psigning.secretKeyRingFile=foo \
+            -Pverbose=true
 
   publish-to-sonatype:
     needs: check

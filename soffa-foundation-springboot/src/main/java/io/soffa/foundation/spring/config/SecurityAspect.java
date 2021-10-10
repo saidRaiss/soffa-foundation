@@ -42,7 +42,7 @@ public class SecurityAspect {
     }
 
     @SneakyThrows
-    @Before("@within(io.soffa.foundation.annotations.ApplicationRequired) || @annotation(io.soffa.foundation.annotations.ApplicationRequired)")
+    @Before("@within(io.soffa.foundation.annotations.TenantRequired) || @annotation(io.soffa.foundation.annotations.TenantRequired)")
     public void checkTenant() {
         RequestContext context = getRequestContext().orElseThrow(() -> ERR_TENANT_REQUIRED);
         if (context.getTenantId()==null) {

@@ -22,7 +22,6 @@ public class APIClientTest {
         API client = RestClient.newInstance(API.class, "http://localhost:" + port);
         PingResponse response = client.ping();
         assertEquals("PONG", response.getValue());
-
         assertEquals("Hello", client.echo("Hello"));
     }
 }

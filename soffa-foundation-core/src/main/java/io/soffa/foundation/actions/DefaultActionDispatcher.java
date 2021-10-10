@@ -5,6 +5,7 @@ import io.soffa.foundation.commons.ExecUtil;
 import io.soffa.foundation.commons.JsonUtil;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.context.RequestContextHolder;
+import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.core.RequestContext;
 import io.soffa.foundation.core.model.Validatable;
 import io.soffa.foundation.data.SysLog;
@@ -148,7 +149,15 @@ public class DefaultActionDispatcher implements ActionDispatcher {
                     log.setContext(context);
                     log.setError(error.get());
                     log.setDuration(timeElapsed.toMillis());
-                    sysLogs.save(log);
+                    try {
+                        sysLogs.save(log);
+                    } catch (Exception e) {
+                        String message = e.getMessage();
+                        if (message.toLowerCase().contains("could not prepare statement") && TenantHolder.isEmpty()) {
+                            message = "no active tenant found";
+                        }
+                        LOG.error("failed to save sys log event: %s", message);
+                    }
                 });
             }
         }

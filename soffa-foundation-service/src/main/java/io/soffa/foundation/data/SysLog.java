@@ -1,7 +1,7 @@
 package io.soffa.foundation.data;
 
+import io.soffa.foundation.commons.ErrorUtil;
 import io.soffa.foundation.core.RequestContext;
-import io.soffa.foundation.exceptions.ErrorUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

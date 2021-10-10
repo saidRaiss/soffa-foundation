@@ -1,8 +1,8 @@
 package io.soffa.foundation.data.entities;
 
 import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.data.SysLog;
-import io.soffa.foundation.lang.TextUtil;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 

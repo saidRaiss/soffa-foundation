@@ -12,8 +12,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import io.soffa.foundation.commons.DateUtil;
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.exceptions.TechnicalException;
-import io.soffa.foundation.logging.Logger;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 

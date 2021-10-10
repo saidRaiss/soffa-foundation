@@ -1,6 +1,6 @@
 package io.soffa.foundation.exceptions;
 
-import io.soffa.foundation.lang.TextUtil;
+import io.soffa.foundation.commons.TextUtil;
 
 public class TechnicalException extends RuntimeException {
 

@@ -1,14 +1,17 @@
 package io.soffa.foundation.commons.http;
 
 
-import com.google.common.collect.ImmutableMap;
 import io.soffa.foundation.commons.JsonUtil;
 import io.soffa.foundation.commons.Regex;
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.context.RequestContextHolder;
-import io.soffa.foundation.lang.TextUtil;
 import lombok.SneakyThrows;
 import okhttp3.*;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
@@ -26,11 +29,16 @@ public final class HttpUtil {
 
     @SneakyThrows
     public static OkHttpClient newOkHttpClient() {
-        return newOkHttpClient(null);
+        return newOkHttpClient(null, true);
     }
 
     @SneakyThrows
-    public static OkHttpClient newOkHttpClient(String proxy) {
+    public static OkHttpClient newOkHttpClient(boolean trustAll) {
+        return newOkHttpClient(null, trustAll);
+    }
+
+    @SneakyThrows
+    public static OkHttpClient newOkHttpClient(String proxy, boolean trustAll) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(20, TimeUnit.SECONDS)
@@ -39,6 +47,15 @@ public final class HttpUtil {
             .retryOnConnectionFailure(true)
             .followRedirects(true)
             .followSslRedirects(true);
+
+        if (trustAll) {
+            final TrustManager[] trustAllCerts = {new TrustAllManager()};
+            final SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+            builder.hostnameVerifier((hostname, session) -> true);
+        }
 
         if (TextUtil.isNotEmpty(proxy)) {
             URL parsedUrl = new URL(proxy);
@@ -65,12 +82,7 @@ public final class HttpUtil {
             }
             Request.Builder request = originalRequest.newBuilder().header("Content-Type", contentType);
             RequestContextHolder.get().ifPresent(context -> {
-                Map<String, String> headers = ImmutableMap.of(
-                    "X-TenantId", context.getTenant(),
-                    "X-TraceId", context.getTraceId(),
-                    "X-SpanId", context.getSpanId(),
-                    "X-Application", context.getSpanId()
-                );
+                Map<String, String> headers = context.getHeaders();
                 for (Map.Entry<String, String> e : headers.entrySet()) {
                     boolean isHeaderMissing = TextUtil.isEmpty(originalRequest.header(e.getKey()));
                     if (isHeaderMissing && TextUtil.isNotEmpty(e.getValue())) {

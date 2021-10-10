@@ -1,11 +1,11 @@
 package io.soffa.foundation.spring.config;
 
+import io.soffa.foundation.commons.Logger;
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.data.DbConfig;
 import io.soffa.foundation.data.DbMigration;
 import io.soffa.foundation.data.MockDataSource;
 import io.soffa.foundation.data.TenantAwareDatasource;
-import io.soffa.foundation.lang.TextUtil;
-import io.soffa.foundation.logging.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;

@@ -1,5 +1,6 @@
 package io.soffa.foundation.commons.http;
 
+import io.soffa.foundation.commons.JsonUtil;
 import lombok.SneakyThrows;
 import okhttp3.*;
 
@@ -7,22 +8,35 @@ public class HttpClient {
 
     private final OkHttpClient client;
 
+    public HttpClient() {
+        client = HttpUtil.newOkHttpClient();
+    }
+
     public HttpClient(OkHttpClient client) {
         this.client = client;
     }
 
     @SneakyThrows
-    public HttpResponse get(String url) {
+    public HttpResponse request(HttpRequest request) {
+        RequestBody body = null;
+        if (request.getBody() != null) {
+            body = RequestBody.create(JsonUtil.serialize(request.getBody()), MediaType.parse(request.getContentType()));
+        }
+        return request(request.getMethod(), request.getUrl(), body);
+    }
+
+    @SneakyThrows
+    private HttpResponse request(String method, String url, RequestBody body) {
         Request request = new Request.Builder()
             .url(url)
-            .get()
+            .method(method, body)
             .build();
         Call call = client.newCall(request);
-        try(Response result = call.execute()) {
+        try (Response result = call.execute()) {
             HttpResponse.HttpResponseBuilder res = HttpResponse.builder()
                 .status(result.code())
                 .message(result.message());
-            try(ResponseBody responseBody = result.body()) {
+            try (ResponseBody responseBody = result.body()) {
                 if (responseBody != null) {
                     MediaType contenType = responseBody.contentType();
                     if (contenType != null) {
@@ -34,4 +48,41 @@ public class HttpClient {
             return res.build();
         }
     }
+
+    public HttpResponse get(String url) {
+        return request(HttpRequest.get(url));
+    }
+
+    public HttpResponse post(String url) {
+        return request(HttpRequest.post(url));
+    }
+
+    public HttpResponse post(String url, Object body) {
+        return request(HttpRequest.post(url, body));
+    }
+
+    public HttpResponse put(String url) {
+        return request(HttpRequest.put(url));
+    }
+
+    public HttpResponse put(String url, Object body) {
+        return request(HttpRequest.put(url, body));
+    }
+
+    public HttpResponse patch(String url) {
+        return request(HttpRequest.patch(url));
+    }
+
+    public HttpResponse patch(String url, Object body) {
+        return request(HttpRequest.patch(url, body));
+    }
+
+    public HttpResponse delete(String url) {
+        return request(HttpRequest.delete(url));
+    }
+
+    public HttpResponse delete(String url, Object body) {
+        return request(HttpRequest.delete(url, body));
+    }
+
 }

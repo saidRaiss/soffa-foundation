@@ -2,9 +2,9 @@ package io.soffa.foundation.spring.config.amqp;
 
 import io.soffa.foundation.commons.IDs;
 import io.soffa.foundation.commons.JsonUtil;
+import io.soffa.foundation.commons.Logger;
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.events.Event;
-import io.soffa.foundation.lang.TextUtil;
-import io.soffa.foundation.logging.Logger;
 import io.soffa.foundation.pubsub.PubSubClient;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

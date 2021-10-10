@@ -1,8 +1,8 @@
 package io.soffa.foundation.context;
 
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.core.RequestContext;
 import io.soffa.foundation.exceptions.FunctionalException;
-import io.soffa.foundation.logging.Logger;
 
 import java.util.Optional;
 

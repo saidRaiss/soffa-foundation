@@ -1,9 +1,9 @@
 package io.soffa.foundation.spring.config;
 
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.core.RequestContext;
 import io.soffa.foundation.exceptions.UnauthorizedException;
 import io.soffa.foundation.exceptions.ValidationException;
-import io.soffa.foundation.lang.TextUtil;
 import lombok.SneakyThrows;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

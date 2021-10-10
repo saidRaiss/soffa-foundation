@@ -1,6 +1,8 @@
 package io.soffa.foundation.spring;
 
 import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.Logger;
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.commons.jwt.JwtDecoder;
 import io.soffa.foundation.context.GrantedRole;
 import io.soffa.foundation.context.RequestContextHolder;
@@ -9,8 +11,6 @@ import io.soffa.foundation.core.RequestContext;
 import io.soffa.foundation.core.model.Authentication;
 import io.soffa.foundation.core.model.TenantId;
 import io.soffa.foundation.exceptions.UnauthorizedException;
-import io.soffa.foundation.lang.TextUtil;
-import io.soffa.foundation.logging.Logger;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +83,7 @@ public class RequestFilter extends OncePerRequestFilter {
                     permissions.add(new SimpleGrantedAuthority(GrantedRole.HAS_TENANT_ID));
                 }
                 context.setAuthentication(auth.get());
+                context.setAuthorization(token);
                 UsernamePasswordAuthenticationToken authz = new UsernamePasswordAuthenticationToken(context, null, permissions);
                 SecurityContextHolder.getContext().setAuthentication(authz);
             });

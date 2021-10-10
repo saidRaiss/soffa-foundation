@@ -9,8 +9,8 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import io.soffa.foundation.commons.DateUtil;
 import io.soffa.foundation.commons.IOUtil;
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.exceptions.TechnicalException;
-import io.soffa.foundation.logging.Logger;
 import lombok.SneakyThrows;
 import org.json.JSONObject;
 

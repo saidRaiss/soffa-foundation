@@ -1,7 +1,7 @@
 package io.soffa.foundation.data;
 
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.exceptions.TechnicalException;
-import io.soffa.foundation.lang.TextUtil;
 import lombok.Builder;
 import lombok.Data;
 import lombok.SneakyThrows;

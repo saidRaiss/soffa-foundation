@@ -1,4 +1,4 @@
-package io.soffa.foundation.lang;
+package io.soffa.foundation.commons;
 
 import java.util.Collection;
 

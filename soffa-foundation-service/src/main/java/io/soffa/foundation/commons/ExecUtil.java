@@ -1,7 +1,5 @@
 package io.soffa.foundation.commons;
 
-import io.soffa.foundation.logging.Logger;
-
 public final class ExecUtil {
 
     private static final Logger LOG = Logger.get(ExecUtil.class);

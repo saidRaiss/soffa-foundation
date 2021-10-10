@@ -1,8 +1,8 @@
 package io.soffa.foundation.web;
 
 import com.google.common.base.Preconditions;
-import io.soffa.foundation.lang.CollectionUtil;
-import io.soffa.foundation.lang.TextUtil;
+import io.soffa.foundation.commons.CollectionUtil;
+import io.soffa.foundation.commons.TextUtil;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

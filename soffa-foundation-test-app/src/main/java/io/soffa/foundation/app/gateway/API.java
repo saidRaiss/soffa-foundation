@@ -6,7 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
-import retrofit2.http.GET;
+
+import javax.ws.rs.Path;
 
 @Tags(
     @Tag(name = "app", description = "Default application tag")
@@ -14,11 +15,21 @@ import retrofit2.http.GET;
 public interface API {
 
     @Operation(
+        method = "GET",
         summary = "Ping endpoint",
         description = "Will return pong message on successful request",
         parameters = {@Parameter(ref = ApiHeaders.TENANT_ID)}
     )
-    @GET("ping")
+    @Path("/ping")
     PingResponse ping();
+
+    @Operation(
+        method = "POST",
+        summary = "Echo endpoint",
+        description = "Will return the sent message",
+        parameters = {@Parameter(ref = ApiHeaders.TENANT_ID)}
+    )
+    @Path("/echo")
+    String echo(String input);
 
 }

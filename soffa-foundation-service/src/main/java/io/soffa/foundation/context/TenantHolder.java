@@ -1,10 +1,10 @@
 package io.soffa.foundation.context;
 
 import com.google.common.base.Preconditions;
+import io.soffa.foundation.commons.Logger;
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.core.model.TenantId;
 import io.soffa.foundation.exceptions.FunctionalException;
-import io.soffa.foundation.lang.TextUtil;
-import io.soffa.foundation.logging.Logger;
 import lombok.SneakyThrows;
 
 import java.util.Optional;
@@ -77,8 +77,11 @@ public final class TenantHolder {
         CountDownLatch latch = new CountDownLatch(1);
         SC.submit(() -> {
             TenantHolder.set(tenantId);
-            runnable.run();
-            latch.countDown();
+            try {
+                runnable.run();
+            } finally {
+                latch.countDown();
+            }
         });
         latch.await();
     }

@@ -3,11 +3,11 @@ package io.soffa.foundation.events;
 import com.google.common.base.Preconditions;
 import io.soffa.foundation.commons.IDs;
 import io.soffa.foundation.commons.JsonUtil;
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.context.RequestContextHolder;
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.core.RequestContext;
 import io.soffa.foundation.core.model.TenantId;
-import io.soffa.foundation.logging.Logger;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

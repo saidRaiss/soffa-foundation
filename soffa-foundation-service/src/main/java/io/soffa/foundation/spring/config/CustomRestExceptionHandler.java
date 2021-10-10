@@ -1,8 +1,9 @@
 package io.soffa.foundation.spring.config;
 
+import io.soffa.foundation.commons.ErrorUtil;
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.context.RequestContextHolder;
 import io.soffa.foundation.exceptions.*;
-import io.soffa.foundation.logging.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;

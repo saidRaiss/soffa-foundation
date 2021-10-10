@@ -1,16 +1,14 @@
 package io.soffa.foundation.app;
 
-import io.soffa.foundation.app.core.APIClient;
 import io.soffa.foundation.app.core.PingResponse;
-import io.soffa.foundation.client.ClientFactory;
+import io.soffa.foundation.app.gateway.API;
+import io.soffa.foundation.client.RestClient;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import retrofit2.Response;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class APIClientTest {
@@ -21,11 +19,10 @@ public class APIClientTest {
     @SneakyThrows
     @Test
     public void testAPIClient() {
-        APIClient client = ClientFactory.newClient(APIClient.class, "http://localhost:" + port);
-        Response<PingResponse> response = client.ping().execute();
-        assertEquals(200, response.code());
-        PingResponse result = response.body();
-        assertNotNull(result);
-        assertEquals("PONG", result.getValue());
+        API client = RestClient.newInstance(API.class, "http://localhost:" + port);
+        PingResponse response = client.ping();
+        assertEquals("PONG", response.getValue());
+
+        assertEquals("Hello", client.echo("Hello"));
     }
 }

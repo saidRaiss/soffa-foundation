@@ -2,11 +2,11 @@ package io.soffa.foundation.data;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.soffa.foundation.commons.Logger;
+import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.exceptions.DatabaseException;
 import io.soffa.foundation.exceptions.TechnicalException;
-import io.soffa.foundation.lang.TextUtil;
-import io.soffa.foundation.logging.Logger;
 import liquibase.exception.LiquibaseException;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.SneakyThrows;

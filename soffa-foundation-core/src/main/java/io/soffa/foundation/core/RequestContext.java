@@ -2,7 +2,6 @@ package io.soffa.foundation.core;
 
 import io.soffa.foundation.core.model.Authentication;
 import io.soffa.foundation.core.model.TenantId;
-import io.soffa.foundation.exceptions.TechnicalException;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -17,6 +16,7 @@ public class RequestContext {
 
     private static String serviceName = "app";
 
+    private String authorization;
     private Authentication authentication;
     private TenantId tenantId;
     private String applicationName;
@@ -27,7 +27,7 @@ public class RequestContext {
     @SneakyThrows
     public static void setServiceName(String value) {
         if (isEmpty(value)) {
-            throw new TechnicalException("Service name cannot be empty");
+            throw new IllegalArgumentException("Service name cannot be empty");
         }
         serviceName = value;
     }
@@ -37,6 +37,10 @@ public class RequestContext {
             return null;
         }
         return tenantId.getValue();
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
     }
 
     public boolean hasTenant() {
@@ -107,6 +111,27 @@ public class RequestContext {
         }
         contextMap.put("service_name", serviceName);
         return contextMap;
+    }
+
+    @SneakyThrows
+    public Map<String, String> getHeaders() {
+        Map<String, String> headers = new HashMap<>();
+        if (isNotEmpty(applicationName)) {
+            headers.put(ApiHeaders.APPLICATION, applicationName);
+        }
+        if (tenantId != null) {
+            headers.put(ApiHeaders.TENANT_ID, tenantId.getValue());
+        }
+        if (isNotEmpty(traceId)) {
+            headers.put(ApiHeaders.TRACE_ID, traceId);
+        }
+        if (isNotEmpty(spanId)) {
+            headers.put(ApiHeaders.SPAN_ID, spanId);
+        }
+        if (authorization!=null && !authorization.isEmpty()) {
+            headers.put("Authorization", "Bearer " + authorization);
+        }
+        return headers;
     }
 
     private static boolean isNotEmpty(String value) {

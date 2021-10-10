@@ -1,7 +1,8 @@
-package io.soffa.foundation.exceptions;
+package io.soffa.foundation.commons;
 
 import com.mgnt.utils.TextUtils;
-import io.soffa.foundation.lang.TextUtil;
+import io.soffa.foundation.exceptions.FunctionalException;
+import io.soffa.foundation.exceptions.TechnicalException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;

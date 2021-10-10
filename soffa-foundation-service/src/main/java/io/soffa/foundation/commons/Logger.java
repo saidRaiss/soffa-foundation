@@ -1,13 +1,9 @@
-package io.soffa.foundation.logging;
+package io.soffa.foundation.commons;
 
 import com.mgnt.utils.TextUtils;
 import io.soffa.foundation.core.RequestContext;
 import io.soffa.foundation.core.model.TenantId;
-import io.soffa.foundation.exceptions.ErrorUtil;
-import io.soffa.foundation.lang.TextUtil;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nullable;
 
 public class Logger {
 
@@ -28,7 +24,7 @@ public class Logger {
         return log.isInfoEnabled();
     }
 
-    public static void setContext(@Nullable RequestContext context) {
+    public static void setContext(RequestContext context) {
         if (context == null) {
             org.slf4j.MDC.clear();
         }else {

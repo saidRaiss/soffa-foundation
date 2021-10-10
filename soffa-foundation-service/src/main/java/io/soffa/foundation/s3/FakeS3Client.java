@@ -1,6 +1,6 @@
 package io.soffa.foundation.s3;
 
-import io.soffa.foundation.logging.Logger;
+import io.soffa.foundation.commons.Logger;
 
 import java.io.File;
 import java.io.InputStream;

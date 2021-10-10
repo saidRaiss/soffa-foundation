@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":soffa-foundation-service"))
+    implementation(project(":soffa-foundation-springboot"))
     testImplementation(project(":soffa-foundation-test"))
     runtimeOnly("com.h2database:h2:1.4.200")
 

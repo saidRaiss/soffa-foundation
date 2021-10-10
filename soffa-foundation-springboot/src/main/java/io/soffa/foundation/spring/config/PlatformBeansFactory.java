@@ -1,12 +1,12 @@
 package io.soffa.foundation.spring.config;
 
+import io.soffa.foundation.actions.Action;
+import io.soffa.foundation.actions.Action0;
 import io.soffa.foundation.actions.ActionDispatcher;
 import io.soffa.foundation.actions.DefaultActionDispatcher;
 import io.soffa.foundation.commons.ErrorUtil;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
-import io.soffa.foundation.actions.Action;
-import io.soffa.foundation.actions.Action0;
 import io.soffa.foundation.core.RequestContext;
 import io.soffa.foundation.data.DbConfig;
 import io.soffa.foundation.data.SysLogRepository;

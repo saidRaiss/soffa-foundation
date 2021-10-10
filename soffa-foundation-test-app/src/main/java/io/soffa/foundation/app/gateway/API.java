@@ -2,6 +2,7 @@ package io.soffa.foundation.app.gateway;
 
 import io.soffa.foundation.app.core.PingResponse;
 import io.soffa.foundation.core.ApiHeaders;
+import io.soffa.foundation.core.RequestContext;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +22,7 @@ public interface API {
         parameters = {@Parameter(ref = ApiHeaders.TENANT_ID)}
     )
     @Path("/ping")
-    PingResponse ping();
+    PingResponse ping(@Parameter(hidden = true) RequestContext context);
 
     @Operation(
         method = "POST",
@@ -30,6 +31,6 @@ public interface API {
         parameters = {@Parameter(ref = ApiHeaders.TENANT_ID)}
     )
     @Path("/echo")
-    String echo(String input);
+    String echo(String input, @Parameter(hidden = true) RequestContext context);
 
 }

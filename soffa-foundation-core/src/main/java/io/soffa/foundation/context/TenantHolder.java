@@ -15,6 +15,8 @@ import java.util.function.Supplier;
 
 public final class TenantHolder {
 
+    public static boolean hasDefault;
+
     private static final ThreadLocal<String> CURRENT = new InheritableThreadLocal<>();
     private static final ExecutorService SC = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
@@ -45,7 +47,7 @@ public final class TenantHolder {
     }
 
     public static boolean isEmpty() {
-        return TextUtil.isEmpty(CURRENT.get());
+        return TextUtil.isEmpty(CURRENT.get()) && !hasDefault;
     }
 
     public static Optional<String> get() {

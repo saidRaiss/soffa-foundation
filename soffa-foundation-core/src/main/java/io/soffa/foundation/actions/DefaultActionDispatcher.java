@@ -1,7 +1,6 @@
 package io.soffa.foundation.actions;
 
 import io.soffa.foundation.commons.ErrorUtil;
-import io.soffa.foundation.commons.ExecUtil;
 import io.soffa.foundation.commons.JsonUtil;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.context.RequestContextHolder;
@@ -133,32 +132,36 @@ public class DefaultActionDispatcher implements ActionDispatcher {
             error.set(e);
             throw e;
         } finally {
+
             if (sysLogs != null) {
-                Instant finish = Instant.now();
-                Duration timeElapsed = Duration.between(start, finish);
-                if (timeElapsed.getSeconds() >= SLOW_ACTION_THRESHOLD) {
-                    LOG.warn("action %s tooks more than %ds", action, timeElapsed.getSeconds());
-                }
-                ExecUtil.safe(() -> {
-                    SysLog log = new SysLog();
-                    log.setKind("action");
-                    log.setEvent(action);
-                    if (data != null) {
-                        log.setData(JsonUtil.serialize(data));
+
+                if (TenantHolder.isEmpty()) {
+                    LOG.warn("No tenant found in current context, skipping syslog persist.");
+                }else {
+
+                    Instant finish = Instant.now();
+                    Duration timeElapsed = Duration.between(start, finish);
+                    if (timeElapsed.getSeconds() >= SLOW_ACTION_THRESHOLD) {
+                        LOG.warn("action %s tooks more than %ds", action, timeElapsed.getSeconds());
                     }
-                    log.setContext(context);
-                    log.setError(error.get());
-                    log.setDuration(timeElapsed.toMillis());
-                    try {
-                        sysLogs.save(log);
-                    } catch (Exception e) {
-                        String message = e.getMessage();
-                        if (message.toLowerCase().contains("could not prepare statement") && TenantHolder.isEmpty()) {
-                            message = "no active tenant found";
+
+                    TenantHolder.submit(() -> {
+                        SysLog log = new SysLog();
+                        log.setKind("action");
+                        log.setEvent(action);
+                        if (data != null) {
+                            log.setData(JsonUtil.serialize(data));
                         }
-                        LOG.error("failed to save sys log event: %s", message);
-                    }
-                });
+                        log.setContext(context);
+                        log.setError(error.get());
+                        log.setDuration(timeElapsed.toMillis());
+                        try {
+                            sysLogs.save(log);
+                        } catch (Exception e) {
+                            LOG.error(e, "failed to save sys log event: %s", e.getMessage());
+                        }
+                    });
+                }
             }
         }
     }

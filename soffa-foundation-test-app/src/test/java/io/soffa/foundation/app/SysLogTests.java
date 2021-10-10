@@ -4,6 +4,7 @@ import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.core.ApiHeaders;
 import io.soffa.foundation.data.SysLogRepository;
 import io.soffa.foundation.test.HttpExpect;
+import io.soffa.foundation.test.TestUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(properties = {"app.sys-logs.enabled=true"})
 @AutoConfigureMockMvc
@@ -30,16 +30,16 @@ public class SysLogTests {
         HttpExpect test = new HttpExpect(mvc);
 
         long initialCount = sysLogs.count();
-        test.get("/ping").expect().isOK().json("$.value", "PONG");
+        test.get("/ping").withTenant("T1").expect().isOK().json("$.value", "PONG");
 
-        assertEquals(initialCount + 1, sysLogs.count());
+        TestUtil.awaitUntil(3, () -> initialCount + 1 == sysLogs.count());
 
         test.get("/ping").
-            header(ApiHeaders.TENANT_ID, "T1").
+            withTenant("T1").
             header(ApiHeaders.APPLICATION, "Demo").
             expect().isOK().json("$.value", "PONG");
 
-        assertEquals(initialCount + 2, sysLogs.count());
+        TestUtil.awaitUntil(3, () -> initialCount + 2 == sysLogs.count());
     }
 
 

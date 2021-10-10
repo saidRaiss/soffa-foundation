@@ -50,6 +50,10 @@ public class RequestFilter extends OncePerRequestFilter {
 
         RequestContext context = new RequestContext();
 
+        if (TenantHolder.hasDefault) {
+            context.setTenantId(new TenantId("default"));
+        }
+
         lookupHeader(request, "X-TenantId", "X-Tenant").ifPresent(value -> {
             logger.debug("Tenant found in context", value);
             context.setTenantId(new TenantId(value));

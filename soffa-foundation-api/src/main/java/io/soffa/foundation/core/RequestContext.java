@@ -3,7 +3,6 @@ package io.soffa.foundation.core;
 import io.soffa.foundation.core.model.Authentication;
 import io.soffa.foundation.core.model.TenantId;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.util.HashMap;
@@ -27,6 +26,17 @@ public class RequestContext {
     public RequestContext() {
         this.traceId = UUID.randomUUID().toString();
         this.spanId = UUID.randomUUID().toString();
+    }
+
+    public static RequestContext create(String tenantId) {
+        RequestContext ctx = new RequestContext();
+        ctx.setTenantId(new TenantId(tenantId));
+        return ctx;
+    }
+
+    public RequestContext withTenant(String tenantId) {
+        this.setTenantId(new TenantId(tenantId));
+        return this;
     }
 
     @SneakyThrows

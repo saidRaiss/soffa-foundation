@@ -53,6 +53,7 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         }
         links.forEach((name, url) -> dataSources.put(name, createDataSource(DataSourceProperties.create(name, url.trim()))));
         dataSources.put(NONE, new MockDataSource());
+        TenantHolder.hasDefault = dataSources.containsKey(DEFAULT);
         super.setTargetDataSources(dataSources);
     }
 

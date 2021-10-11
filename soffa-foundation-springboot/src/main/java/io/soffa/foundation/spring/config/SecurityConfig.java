@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @ConditionalOnMissingBean(CorsFilter.class)
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+            new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");
@@ -41,18 +41,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                //.and().exceptionHandling()
-                //.authenticationEntryPoint((request, response, ex) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
-                .and()
-                .authorizeRequests()
-                .antMatchers("/actuator/**").permitAll()
-                .antMatchers("/**").permitAll()
-                .and().addFilterBefore(
-                        new RequestFilter(jwtDecoder),
-                        UsernamePasswordAuthenticationFilter.class
-                );
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            //.and().exceptionHandling()
+            //.authenticationEntryPoint((request, response, ex) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()))
+            .and()
+            .authorizeRequests()
+            .antMatchers("/actuator/**").permitAll()
+            .antMatchers("/**").permitAll()
+            .and().addFilterBefore(
+                new RequestFilter(jwtDecoder),
+                UsernamePasswordAuthenticationFilter.class
+            );
     }
 
 }

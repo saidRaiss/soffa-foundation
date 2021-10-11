@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class HttpResult {
 
-    private final ResultActions result;
     private static final ObjectMapper MAPPER = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -23,6 +22,9 @@ public class HttpResult {
         SimpleModule simpleModule = new SimpleModule();
         MAPPER.registerModule(simpleModule);
     }
+
+    private final ResultActions result;
+
     HttpResult(ResultActions result) {
         this.result = result;
     }

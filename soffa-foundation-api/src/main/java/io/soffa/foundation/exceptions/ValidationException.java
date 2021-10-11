@@ -1,4 +1,3 @@
-
 package io.soffa.foundation.exceptions;
 
 import java.text.MessageFormat;

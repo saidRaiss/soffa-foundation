@@ -8,7 +8,7 @@ import java.util.concurrent.CountDownLatch;
 
 
 @Component
-public  class TestPubSubListener implements PubSubListener {
+public class TestPubSubListener implements PubSubListener {
 
     public static final CountDownLatch LATCH = new CountDownLatch(2);
     private static final String HELLO = "HELLO";

@@ -32,18 +32,19 @@ public final class JwtUtil {
     public static String create(final String issuer, final String secretKey,
                                 final String subject, final Map<String, Object> claims,
                                 final int timeToLiveInMinutes) {
-        return create(issuer, secretKey, subject, claims, timeToLiveInMinutes,EncryptionMethod.A128GCM);
+        return create(issuer, secretKey, subject, claims, timeToLiveInMinutes, EncryptionMethod.A128GCM);
     }
+
     @SneakyThrows
     public static String create(final String issuer, final String secretKey,
                                 final String subject, final Map<String, Object> claims,
                                 final int timeToLiveInMinutes, final EncryptionMethod encryptionMethod) {
         final Date issuedAt = new Date();
         JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet.Builder()
-                .subject(subject)
-                .issuer(issuer)
-                .issueTime(issuedAt)
-                .expirationTime(DateUtil.plusMinutes(issuedAt, timeToLiveInMinutes));
+            .subject(subject)
+            .issuer(issuer)
+            .issueTime(issuedAt)
+            .expirationTime(DateUtil.plusMinutes(issuedAt, timeToLiveInMinutes));
         for (Map.Entry<String, Object> entry : claims.entrySet()) {
             claimsSetBuilder.claim(entry.getKey(), entry.getValue());
         }
@@ -77,8 +78,8 @@ public final class JwtUtil {
         JWSSigner signer = new RSASSASigner(rsaJWK);
         Date issuedAt = new Date();
         JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet.Builder().subject(subject).issuer(issuer)
-                .issueTime(issuedAt)
-                .expirationTime(DateUtil.plusHours(issuedAt, 1));
+            .issueTime(issuedAt)
+            .expirationTime(DateUtil.plusHours(issuedAt, 1));
         if (claims != null) {
             for (Map.Entry<String, Serializable> entry : claims.entrySet()) {
                 claimsSetBuilder.claim(entry.getKey(), entry.getValue());

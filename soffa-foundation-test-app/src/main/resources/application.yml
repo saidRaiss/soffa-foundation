@@ -26,7 +26,7 @@ app.openapi:
   parameters:
     - name: X-TenantId
       description: Active tenant
-      values: [T1, T2]
+      values: [ T1, T2 ]
       in: header
 
 spring.config.import:

@@ -13,8 +13,8 @@ import java.util.Locale;
 
 public class DateUtil {
 
-    public static Locale defaultLocale = Locale.getDefault();
     public static final String DEFAULT_FORMAT = "yyyyMMddHHmmss";
+    public static Locale defaultLocale = Locale.getDefault();
 
     public static void setDefaultLocale(Locale locale) {
         defaultLocale = locale;

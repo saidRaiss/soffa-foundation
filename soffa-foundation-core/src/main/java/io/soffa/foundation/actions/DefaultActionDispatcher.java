@@ -137,7 +137,7 @@ public class DefaultActionDispatcher implements ActionDispatcher {
 
                 if (TenantHolder.isEmpty()) {
                     LOG.warn("No tenant found in current context, skipping syslog persist.");
-                }else {
+                } else {
 
                     Instant finish = Instant.now();
                     Duration timeElapsed = Duration.between(start, finish);

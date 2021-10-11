@@ -21,7 +21,7 @@ public class JobManager implements JobRequestHandler<Job> {
     }
 
     @Override
-    public void run(Job job)   {
+    public void run(Job job) {
         TenantHolder.set(job.getTenant());
         dispatcher.handle(job.getEvent());
     }

@@ -7,27 +7,20 @@ import org.slf4j.LoggerFactory;
 
 public class Logger {
 
-    private final org.slf4j.Logger log;
     static {
         Logger.setRelevantPackage("io.soffa");
     }
+
+    private final org.slf4j.Logger log;
 
     public Logger(org.slf4j.Logger logger) {
         this.log = logger;
     }
 
-    public boolean isDebugEnabled() {
-        return log.isDebugEnabled();
-    }
-
-    public boolean isInfoEnabled() {
-        return log.isInfoEnabled();
-    }
-
     public static void setContext(RequestContext context) {
         if (context == null) {
             org.slf4j.MDC.clear();
-        }else {
+        } else {
             org.slf4j.MDC.setContextMap(context.getContextMap());
         }
     }
@@ -36,6 +29,30 @@ public class Logger {
         if (tenantId != null) {
             org.slf4j.MDC.put("tenant", tenantId.getValue());
         }
+    }
+
+    public static void setRelevantPackage(String pkg) {
+        if ("*".equals(pkg)) {
+            TextUtils.setRelevantPackage(null);
+        } else {
+            TextUtils.setRelevantPackage(pkg);
+        }
+    }
+
+    public static Logger get(Class<?> type) {
+        return new Logger(LoggerFactory.getLogger(type));
+    }
+
+    public static Logger get(String name) {
+        return new Logger(LoggerFactory.getLogger(name));
+    }
+
+    public boolean isDebugEnabled() {
+        return log.isDebugEnabled();
+    }
+
+    public boolean isInfoEnabled() {
+        return log.isInfoEnabled();
     }
 
     public boolean isTraceEnabled() {
@@ -77,22 +94,6 @@ public class Logger {
 
     public void error(String message, Object... args) {
         log.error(TextUtil.format(message, args));
-    }
-
-    public static void setRelevantPackage(String pkg) {
-        if ("*".equals(pkg)) {
-            TextUtils.setRelevantPackage(null);
-        } else {
-            TextUtils.setRelevantPackage(pkg);
-        }
-    }
-
-    public static Logger get(Class<?> type) {
-        return new Logger(LoggerFactory.getLogger(type));
-    }
-
-    public static Logger get(String name) {
-        return new Logger(LoggerFactory.getLogger(name));
     }
 
 }

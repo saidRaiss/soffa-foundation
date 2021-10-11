@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(properties = {"app.sys-logs.enabled=false"})
@@ -28,7 +27,10 @@ public class ApplicationTest {
     @Test
     public void testActuator() {
         HttpExpect test = new HttpExpect(mvc);
-        test.get("/actuator/health").expect().isOK().json("$.status", "UP");
+        test.get("/actuator/health")
+            .header("Access-Control-Request-Method", "GET")
+            .header("Origin", "https://www.someurl.com")
+            .expect().isOK().json("$.status", "UP");
     }
 
     @Test

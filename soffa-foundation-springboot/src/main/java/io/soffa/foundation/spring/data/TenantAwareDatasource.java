@@ -29,14 +29,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TenantAwareDatasource extends AbstractRoutingDataSource implements ApplicationListener<ContextRefreshedEvent> {
 
+    public static final String NONE = "NONE";
+    public static final String DEFAULT = "default";
     private static final Logger LOG = Logger.get(TenantAwareDatasource.class);
     private final Map<Object, Object> dataSources = new ConcurrentHashMap<>();
     private final ResourceLoader resourceLoader = new DefaultResourceLoader();
     private final String tablesPrefix;
     private final String appicationName;
     private boolean appicationStarted;
-    public static final String NONE = "NONE";
-    public static final String DEFAULT = "default";
 
     @SneakyThrows
     public TenantAwareDatasource(final Map<String, String> links,

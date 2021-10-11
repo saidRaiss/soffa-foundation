@@ -45,7 +45,7 @@ public class SecurityAspect {
     @Before("@within(io.soffa.foundation.annotations.TenantRequired) || @annotation(io.soffa.foundation.annotations.TenantRequired)")
     public void checkTenant() {
         RequestContext context = getRequestContext().orElseThrow(() -> ERR_TENANT_REQUIRED);
-        if (context.getTenantId()==null) {
+        if (context.getTenantId() == null) {
             throw ERR_TENANT_REQUIRED;
         }
     }
@@ -57,7 +57,6 @@ public class SecurityAspect {
         }
         return Optional.empty();
     }
-
 
 
 }

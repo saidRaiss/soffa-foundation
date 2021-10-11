@@ -26,7 +26,7 @@ public class JobsRunrConfig {
                                        @Value("${app.sys-jobs.retries:10}") int retries) {
         DataSource target = ds;
         if (ds instanceof TenantAwareDatasource) {
-            target = ((TenantAwareDatasource)ds).getDefault();
+            target = ((TenantAwareDatasource) ds).getDefault();
         }
         JobRunrConfiguration.JobRunrConfigurationResult config = JobRunr
             .configure()

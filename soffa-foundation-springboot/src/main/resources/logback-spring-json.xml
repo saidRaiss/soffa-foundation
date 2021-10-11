@@ -43,8 +43,9 @@
     </appender>
 
     <appender name="AsyncConsole" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold> <!-- default 20, means drop lower event when has 20% capacity remaining -->
-        <appender-ref ref="Console" />
+        <discardingThreshold>0
+        </discardingThreshold> <!-- default 20, means drop lower event when has 20% capacity remaining -->
+        <appender-ref ref="Console"/>
         <queueSize>1</queueSize> <!-- default 256 -->
         <includeCallerData>false</includeCallerData><!-- default false -->
         <neverBlock>true</neverBlock><!-- default false, set to true to cause the
@@ -53,8 +54,9 @@
 
     <appender name="AsynRollingFile"
               class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold> <!-- default 20, means drop lower event when has 20% capacity remaining -->
-        <appender-ref ref="RollingFile" />
+        <discardingThreshold>0
+        </discardingThreshold> <!-- default 20, means drop lower event when has 20% capacity remaining -->
+        <appender-ref ref="RollingFile"/>
         <queueSize>1</queueSize> <!-- default 256 -->
         <includeCallerData>false</includeCallerData><!-- default false -->
         <neverBlock>false</neverBlock><!-- default false, set to true to cause

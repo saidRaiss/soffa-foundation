@@ -20,7 +20,7 @@ public final class IOUtil {
 
     @SneakyThrows
     public static Optional<String> readFileToString(File input) {
-        if (input==null || !input.isFile() || !input.canRead()) {
+        if (input == null || !input.isFile() || !input.canRead()) {
             return Optional.empty();
         }
         String content = FileUtils.readFileToString(input, StandardCharsets.UTF_8);
@@ -32,7 +32,7 @@ public final class IOUtil {
 
     @SneakyThrows
     public static Optional<String> toString(InputStream input) {
-        if (input==null) {
+        if (input == null) {
             return Optional.empty();
         }
         return Optional.of(IOUtils.toString(input, StandardCharsets.UTF_8));

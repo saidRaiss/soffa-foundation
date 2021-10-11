@@ -9,8 +9,8 @@ import java.lang.reflect.UndeclaredThrowableException;
 
 public final class ErrorUtil {
 
-    private static String defaultErrorPackage = "io.soffa";
     private static final String ALL_PACKAGES = "*";
+    private static String defaultErrorPackage = "io.soffa";
 
     private ErrorUtil() {
         TextUtils.setRelevantPackage(defaultErrorPackage);
@@ -23,7 +23,7 @@ public final class ErrorUtil {
         }
     }
 
-    public static String getStacktrace(Throwable e){
+    public static String getStacktrace(Throwable e) {
         if ("*".equals(defaultErrorPackage)) {
             return TextUtils.getStacktrace(e, true);
         }

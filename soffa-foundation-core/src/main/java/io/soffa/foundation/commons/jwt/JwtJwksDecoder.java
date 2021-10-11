@@ -68,7 +68,7 @@ public class JwtJwksDecoder implements JwtDecoder {
         Set<String> permissions = new HashSet<>();
 
         jwt.lookupClaim("permissions", "grants").ifPresent(s -> {
-            for(String item : s.split(",")) {
+            for (String item : s.split(",")) {
                 if (TextUtil.isNotEmpty(item)) {
                     permissions.add(item.toLowerCase());
                 }

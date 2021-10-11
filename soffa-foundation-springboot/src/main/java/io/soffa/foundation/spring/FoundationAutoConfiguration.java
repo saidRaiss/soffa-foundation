@@ -10,6 +10,6 @@ import org.springframework.core.Ordered;
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 10)
 //@EntityScan(basePackages = "io.soffa.foundation.spring.data")
 //@EnableJpaRepositories(basePackages = "io.soffa.foundation.spring.data")
-public class FoundationAutoConfiguration   {
+public class FoundationAutoConfiguration {
 
 }

@@ -3,9 +3,9 @@ package io.soffa.foundation.metrics;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NoopMetricsRegistryImpl implements MetricsRegistry{
+public class NoopMetricsRegistryImpl implements MetricsRegistry {
 
-    private static final Map<String,Double> REG = new ConcurrentHashMap<>();
+    private static final Map<String, Double> REG = new ConcurrentHashMap<>();
 
     @Override
     public void increment(String counter, double value) {

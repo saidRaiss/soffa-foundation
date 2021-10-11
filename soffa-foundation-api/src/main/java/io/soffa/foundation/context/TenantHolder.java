@@ -15,10 +15,9 @@ import java.util.function.Supplier;
 
 public final class TenantHolder {
 
-    public static boolean hasDefault;
-
     private static final ThreadLocal<String> CURRENT = new InheritableThreadLocal<>();
     private static final ExecutorService SC = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    public static boolean hasDefault;
 
     private TenantHolder() {
     }

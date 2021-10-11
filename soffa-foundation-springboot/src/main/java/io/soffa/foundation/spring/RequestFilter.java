@@ -97,6 +97,7 @@ public class RequestFilter extends OncePerRequestFilter {
         if (context.getTenantId() != null) {
             TenantHolder.set(context.getTenantId().getValue());
             prefix = context.getTenantId().getValue() + "_";
+            Logger.setTenantId(context.getTenantId());
         }
 
         if (TextUtil.isEmpty(context.getSpanId())) {
@@ -107,6 +108,8 @@ public class RequestFilter extends OncePerRequestFilter {
         }
 
         RequestContextHolder.set(context);
+
+
         chain.doFilter(request, response);
     }
 

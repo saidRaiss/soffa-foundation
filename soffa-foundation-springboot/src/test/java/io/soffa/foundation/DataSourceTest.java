@@ -1,4 +1,3 @@
-
 package io.soffa.foundation;
 
 import com.google.common.collect.ImmutableMap;
@@ -36,8 +35,8 @@ public class DataSourceTest {
 
 
         Map<String, Integer> links = ImmutableMap.of(
-                "T1", RandomUtils.nextInt(100, 300),
-                "T2", RandomUtils.nextInt(100, 500)
+            "T1", RandomUtils.nextInt(100, 300),
+            "T2", RandomUtils.nextInt(100, 500)
         );
 
         final CountDownLatch latch = new CountDownLatch(links.get("T1") + links.get("T2"));

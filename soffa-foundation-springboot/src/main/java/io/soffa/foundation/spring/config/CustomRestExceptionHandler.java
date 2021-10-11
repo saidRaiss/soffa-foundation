@@ -31,9 +31,9 @@ import java.util.Optional;
 @ControllerAdvice
 class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private final Environment environment;
     //private final MeterRegistry meterRegistry;
     private static final Logger LOG = Logger.get(CustomRestExceptionHandler.class);
+    private final Environment environment;
 
     @Autowired
     public CustomRestExceptionHandler(Environment environment) {

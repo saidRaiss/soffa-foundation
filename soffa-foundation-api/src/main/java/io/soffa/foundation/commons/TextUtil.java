@@ -4,7 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public final class TextUtil {
 
-    private TextUtil(){}
+    private TextUtil() {
+    }
 
     public static boolean isEmpty(String value) {
         return StringUtils.isEmpty(value);
@@ -19,7 +20,7 @@ public final class TextUtil {
     }
 
     public static String format(String pattern, Object... args) {
-        if (args==null ||args.length==0) {
+        if (args == null || args.length == 0) {
             return pattern;
         }
         return String.format(pattern, args);

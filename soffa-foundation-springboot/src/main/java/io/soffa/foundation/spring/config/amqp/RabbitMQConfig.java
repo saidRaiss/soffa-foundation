@@ -18,17 +18,13 @@ public class RabbitMQConfig {
 
     private static final Logger LOG = Logger.get(RabbitMQConfig.class);
     static boolean embeddedMode;
-
+    private final RabbitTemplate rabbitTemplate;
     @Value("${spring.application.name}")
     private String applicationName;
-
     @Value("${app.amqp.exchange:app}")
     private String exchange;
-
     @Value("${app.amqp.routing:services}")
     private String routing;
-
-    private final RabbitTemplate rabbitTemplate;
 
     public RabbitMQConfig(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;

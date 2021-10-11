@@ -93,11 +93,11 @@ public class OpenApiBuilder {
 
     private void buildParameters() {
 
-        if (desc.getParameters()==null || desc.getParameters().isEmpty()) {
+        if (desc.getParameters() == null || desc.getParameters().isEmpty()) {
             return;
         }
 
-        for(OpenAPIDesc.Parameter param : desc.getParameters()) {
+        for (OpenAPIDesc.Parameter param : desc.getParameters()) {
             String name = param.getName();
 
             Preconditions.checkArgument(TextUtil.isNotEmpty(name), "openapi parameter name or ref is required");
@@ -118,7 +118,7 @@ public class OpenApiBuilder {
                 schema.setEnum(param.getValues());
                 schema.setDefault(param.getValue());
                 parameter.setSchema(schema);
-            }else if (TextUtil.isNotEmpty(param.getValue())) {
+            } else if (TextUtil.isNotEmpty(param.getValue())) {
                 schema.setDefault(param.getValue());
             }
             parameter.setSchema(schema);

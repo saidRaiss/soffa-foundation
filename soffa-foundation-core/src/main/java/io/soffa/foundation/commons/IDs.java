@@ -21,11 +21,11 @@ public final class IDs {
         return prefix(Long.toString(l, Character.MAX_RADIX), prefix);
     }
 
-    public static  String secureRandomId()  {
+    public static String secureRandomId() {
         return secureRandomId("");
     }
 
-    public static  String secureRandomId(String prefix)  {
+    public static String secureRandomId(String prefix) {
         return prefix(NanoIdUtils.randomNanoId(), prefix);
     }
 
@@ -33,7 +33,7 @@ public final class IDs {
         if (StringUtils.isEmpty(prefix)) {
             return value;
         }
-        String  prefix2 = prefix.trim().toLowerCase();
+        String prefix2 = prefix.trim().toLowerCase();
         boolean hasNoDelimier = prefix2.matches(".*[a-zA-Z]$");
         if (hasNoDelimier) { // no delimiter found
             return prefix2 + "_" + value;

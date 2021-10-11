@@ -27,7 +27,6 @@ import java.util.*;
 
 public final class JsonUtil {
 
-    private static final Logger LOGGER = Logger.get(JsonUtil.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -94,7 +93,7 @@ public final class JsonUtil {
         if (input == null) {
             return ClassUtil.newInstance(type);
         }
-        if(type.isInstance(input)) {
+        if (type.isInstance(input)) {
             return type.cast(input);
         }
         return MAPPER.convertValue(input, type);
@@ -111,8 +110,6 @@ public final class JsonUtil {
     public static void serializeToFile(Object content, File file) {
         if (content != null) {
             FileUtils.writeStringToFile(file, JsonUtil.serialize(content), StandardCharsets.UTF_8);
-        } else {
-            LOGGER.warn("Nothing was written to file because provided content is null.");
         }
     }
 

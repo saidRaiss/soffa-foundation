@@ -12,7 +12,7 @@ public interface ObjectStorageClient {
     void upload(File source, String objectName);
 
     void upload(InputStream source, String objectName, String contentType);
-    
+
     String downloadBase64(String bucket, String objectName);
 
     String getDownloadUrl(String bucket, String objectName, long expiresInMinutes);

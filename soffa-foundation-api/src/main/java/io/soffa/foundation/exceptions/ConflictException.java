@@ -1,5 +1,3 @@
-
-
 package io.soffa.foundation.exceptions;
 
 public class ConflictException extends FunctionalException {

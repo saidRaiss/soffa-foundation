@@ -9,7 +9,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class DbConfig {
 
-    private Map<String,String> links;
+    private Map<String, String> links;
     private boolean autoMigrate;
     private String tablePrefix;
 

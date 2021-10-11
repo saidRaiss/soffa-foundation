@@ -6,8 +6,8 @@ plugins {
 
 dependencies {
     api(project(":soffa-foundation-core"))
-    api("org.springframework.boot:spring-boot-starter-web"){
-        exclude(module="spring-boot-starter-tomcat")
+    api("org.springframework.boot:spring-boot-starter-web") {
+        exclude(module = "spring-boot-starter-tomcat")
     }
     runtimeOnly("org.springframework.boot:spring-boot-starter-undertow")
     implementation("org.springframework.boot:spring-boot-starter-actuator")

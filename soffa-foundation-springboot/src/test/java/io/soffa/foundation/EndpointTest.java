@@ -31,9 +31,9 @@ public class EndpointTest {
         test.get("/secure").expect().isUnauthorized();
 
         String jwt = JwtUtil.fromJwks(
-                EndpointTest.class.getResourceAsStream("/security/jwks-dev.priv.json"),
-                "application",
-                "user",
+            EndpointTest.class.getResourceAsStream("/security/jwks-dev.priv.json"),
+            "application",
+            "user",
             ImmutableMap.of(
                 "application", "AppName",
                 "tenant", "T1"
@@ -42,20 +42,20 @@ public class EndpointTest {
         test.get("/secure").bearerAuth(jwt).expect().isOK();
 
         test.get("/secure/full")
-                .bearerAuth(jwt)
-                .header("X-ApplicationName", "TEST")
-                .expect().isOK();
+            .bearerAuth(jwt)
+            .header("X-ApplicationName", "TEST")
+            .expect().isOK();
 
         test.get("/secure/full")
-                .bearerAuth(jwt)
-                .header("X-TenantId", "BF")
-                .expect().isOK();
+            .bearerAuth(jwt)
+            .header("X-TenantId", "BF")
+            .expect().isOK();
 
         test.get("/secure/full")
-                .bearerAuth(jwt)
-                .header("X-ApplicationName", "App")
-                .header("X-TenantId", "TX01")
-                .expect().isOK();
+            .bearerAuth(jwt)
+            .header("X-ApplicationName", "App")
+            .header("X-TenantId", "TX01")
+            .expect().isOK();
     }
 
 }

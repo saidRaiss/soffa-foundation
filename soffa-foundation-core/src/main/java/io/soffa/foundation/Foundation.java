@@ -1,3 +1,4 @@
 package io.soffa.foundation;
 
-public interface Foundation{}
+public interface Foundation {
+}

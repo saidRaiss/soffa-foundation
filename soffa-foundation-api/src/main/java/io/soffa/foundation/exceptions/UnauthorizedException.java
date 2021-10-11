@@ -1,4 +1,3 @@
-
 package io.soffa.foundation.exceptions;
 
 public class UnauthorizedException extends FunctionalException {

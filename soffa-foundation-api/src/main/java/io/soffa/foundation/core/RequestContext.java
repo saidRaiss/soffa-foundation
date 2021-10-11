@@ -14,14 +14,13 @@ import java.util.UUID;
 public class RequestContext {
 
     private static String serviceName = "app";
-
+    private final Map<String, Object> metas = new HashMap<>();
     private String authorization;
     private Authentication authentication;
     private TenantId tenantId;
     private String applicationName;
     private String traceId;
     private String spanId;
-    private final Map<String, Object> metas = new HashMap<>();
 
     public RequestContext() {
         this.traceId = UUID.randomUUID().toString();
@@ -34,17 +33,25 @@ public class RequestContext {
         return ctx;
     }
 
-    public RequestContext withTenant(String tenantId) {
-        this.setTenantId(new TenantId(tenantId));
-        return this;
-    }
-
     @SneakyThrows
     public static void setServiceName(String value) {
         if (isEmpty(value)) {
             throw new IllegalArgumentException("Service name cannot be empty");
         }
         serviceName = value;
+    }
+
+    private static boolean isNotEmpty(String value) {
+        return !isEmpty(value);
+    }
+
+    private static boolean isEmpty(String value) {
+        return value == null || value.isEmpty();
+    }
+
+    public RequestContext withTenant(String tenantId) {
+        this.setTenantId(new TenantId(tenantId));
+        return this;
     }
 
     public String getTenant() {
@@ -147,14 +154,6 @@ public class RequestContext {
             headers.put("Authorization", "Bearer " + authorization);
         }
         return headers;
-    }
-
-    private static boolean isNotEmpty(String value) {
-        return !isEmpty(value);
-    }
-
-    private static boolean isEmpty(String value) {
-        return value == null || value.isEmpty();
     }
 
 }

@@ -49,8 +49,8 @@ public class FakeS3Client implements ObjectStorageClient {
         return "mocked://default/" + objectName;
     }
 
-	@Override
-	public String downloadBase64(String bucket, String objectName) {
-		return "";
-	}
+    @Override
+    public String downloadBase64(String bucket, String objectName) {
+        return "";
+    }
 }

@@ -32,6 +32,13 @@ public class SysLogEntity {
     @Temporal(TemporalType.TIME)
     private Date createdAt;
 
+    @SneakyThrows
+    public static SysLogEntity fromDomain(SysLog model) {
+        SysLogEntity entity = new SysLogEntity();
+        BeanUtils.copyProperties(entity, model);
+        return entity;
+    }
+
     @PrePersist
     public void onPrePersist() {
         if (TextUtil.isEmpty(id)) {
@@ -40,13 +47,6 @@ public class SysLogEntity {
         if (createdAt == null) {
             createdAt = new Date();
         }
-    }
-
-    @SneakyThrows
-    public static SysLogEntity fromDomain(SysLog model) {
-        SysLogEntity entity = new SysLogEntity();
-        BeanUtils.copyProperties(entity, model);
-        return entity;
     }
 
     @SneakyThrows

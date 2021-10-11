@@ -19,20 +19,15 @@ import java.util.List;
 @Builder
 public class DataSourceProperties {
 
+    public static final String H2_DRIVER = "org.h2.Driver";
+    public static final String H2 = "h2";
+    public static final String PG = "postgresql";
     private String name;
     private String url;
     private String username;
     private String password;
     private String driverClassName;
     private String schema;
-
-    public static final String H2_DRIVER = "org.h2.Driver";
-    public static final String H2 = "h2";
-    public static final String PG = "postgresql";
-
-    public boolean hasSchema() {
-        return TextUtil.isNotEmpty(schema);
-    }
 
     @SneakyThrows
     public static DataSourceProperties create(final String name, final String datasourceUrl) {
@@ -124,6 +119,9 @@ public class DataSourceProperties {
         });
     }
 
+    public boolean hasSchema() {
+        return TextUtil.isNotEmpty(schema);
+    }
 
     @Value
     private static class JdbcInfo {

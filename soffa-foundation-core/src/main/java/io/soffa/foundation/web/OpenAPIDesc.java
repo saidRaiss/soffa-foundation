@@ -49,7 +49,7 @@ public class OpenAPIDesc {
         private List<String> values;
         private String value;
         private String type = "string";
-        private boolean nullable;
+        private boolean required;
     }
 
 }

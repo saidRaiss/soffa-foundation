@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.context.TenantHolder;
+import io.soffa.foundation.core.model.TenantId;
 import io.soffa.foundation.data.DataSourceProperties;
 import io.soffa.foundation.data.DbMigration;
 import io.soffa.foundation.exceptions.DatabaseException;
@@ -30,7 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TenantAwareDatasource extends AbstractRoutingDataSource implements ApplicationListener<ContextRefreshedEvent> {
 
     public static final String NONE = "NONE";
-    public static final String DEFAULT = "default";
     private static final Logger LOG = Logger.get(TenantAwareDatasource.class);
     private final Map<Object, Object> dataSources = new ConcurrentHashMap<>();
     private final ResourceLoader resourceLoader = new DefaultResourceLoader();
@@ -53,7 +53,7 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         }
         links.forEach((name, url) -> dataSources.put(name, createDataSource(DataSourceProperties.create(name, url.trim()))));
         dataSources.put(NONE, new MockDataSource());
-        TenantHolder.hasDefault = dataSources.containsKey(DEFAULT);
+        TenantHolder.hasDefault = dataSources.containsKey(TenantId.DEFAULT);
         super.setTargetDataSources(dataSources);
     }
 
@@ -61,8 +61,8 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
     @Override
     protected Object determineCurrentLookupKey() {
         if (TenantHolder.isEmpty()) {
-            if (dataSources.containsKey(DEFAULT)) {
-                return DEFAULT;
+            if (dataSources.containsKey(TenantId.DEFAULT)) {
+                return TenantId.DEFAULT;
             } else if (!appicationStarted) {
                 return NONE;
             }
@@ -79,8 +79,8 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         if (hasOneItem) {
             return (DataSource) dataSources.values().iterator().next();
         }
-        if (dataSources.containsKey(DEFAULT)) {
-            return (DataSource) dataSources.get(DEFAULT);
+        if (dataSources.containsKey(TenantId.DEFAULT)) {
+            return (DataSource) dataSources.get(TenantId.DEFAULT);
         }
         throw new TechnicalException("No default datasource registered");
     }
@@ -155,8 +155,8 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
     private void doApplyMigration(SpringLiquibase lqb, Map<String, String> changeLogParams, HikariDataSource ds) {
         String schema = ds.getSchema();
         String dsName = ds.getPoolName().split("__")[0];
-        if (DEFAULT.equals(dsName)) {
-            lqb.setContexts("default");
+        if (TenantId.DEFAULT.equals(dsName)) {
+            lqb.setContexts(TenantId.DEFAULT);
         } else {
             lqb.setContexts("tenant," + dsName.toLowerCase());
         }

@@ -19,6 +19,7 @@ public final class TenantHolder {
     private static final ExecutorService SC = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     public static boolean hasDefault;
 
+
     private TenantHolder() {
     }
 
@@ -54,7 +55,13 @@ public final class TenantHolder {
     }
 
     public static String require() {
-        return Optional.ofNullable(CURRENT.get()).orElseThrow(() -> new FunctionalException("MISSING_NTENAT"));
+        if (CURRENT.get() == null) {
+            if (hasDefault) {
+                return TenantId.DEFAULT;
+            }
+            throw new FunctionalException("MISSING_TENANT");
+        }
+        return CURRENT.get();
     }
 
     public static void submit(Runnable runnable) {

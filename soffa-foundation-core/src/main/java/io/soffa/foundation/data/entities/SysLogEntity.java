@@ -24,6 +24,7 @@ public class SysLogEntity {
     private String requestId;
     private String spanId;
     private String traceId;
+    @Column(name = "user_id")
     private String user;
     private String application;
     private long duration;

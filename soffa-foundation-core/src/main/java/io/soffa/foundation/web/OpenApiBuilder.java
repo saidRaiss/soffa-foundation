@@ -35,6 +35,7 @@ public class OpenApiBuilder {
         }
         buildParameters();
         api.setComponents(components);
+
         return api;
     }
 
@@ -105,15 +106,15 @@ public class OpenApiBuilder {
             Preconditions.checkArgument(TextUtil.isNotEmpty(param.getIn()), "openapi parameter.in is required");
 
             Parameter parameter = new Parameter();
-            parameter.setIn(param.getIn().toUpperCase());
+            parameter.setIn(param.getIn().toLowerCase());
             parameter.setDescription(param.getDescription());
             parameter.setName(name);
-            parameter.setAllowEmptyValue(param.isNullable());
-            parameter.setRequired(!param.isNullable());
+            //parameter.setAllowEmptyValue(param.isNullable());
+            parameter.setRequired(param.isRequired());
 
             Schema<String> schema = new Schema<>();
             schema.setType(param.getType());
-            schema.setNullable(param.isNullable());
+            //schema.setNullable(param.isNullable());
 
             if (CollectionUtil.isNotEmpty(param.getValues())) {
                 schema.setEnum(param.getValues());

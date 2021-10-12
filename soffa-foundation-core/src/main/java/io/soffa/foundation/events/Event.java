@@ -28,7 +28,7 @@ public class Event implements Serializable {
     public Event() {
         this.id = IDs.secureRandomId("evt_");
         context = RequestContextHolder.get().orElse(new RequestContext());
-        if (!TenantHolder.isEmpty() && !context.hasTenant()) {
+        if (!context.hasTenant() && !TenantHolder.isEmpty()) {
             context.setTenantId(new TenantId(TenantHolder.require()));
         }
     }

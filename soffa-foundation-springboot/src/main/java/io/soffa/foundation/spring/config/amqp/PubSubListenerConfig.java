@@ -1,9 +1,9 @@
 package io.soffa.foundation.spring.config.amqp;
 
+import com.rabbitmq.client.Channel;
 import io.soffa.foundation.commons.JsonUtil;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.context.RequestContextHolder;
-import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.events.Event;
 import io.soffa.foundation.pubsub.PubSubListener;
 import lombok.SneakyThrows;
@@ -25,10 +25,12 @@ public class PubSubListenerConfig {
     }
 
     @SneakyThrows
-    @RabbitListener(queues = {"${spring.application.name}"}, ackMode = "AUTO")
-    public void listen(Message message) {
+    @RabbitListener(queues = {"${spring.application.name}"}, ackMode = "MANUAL")
+    public void listen(Message message, Channel channel) {
+        final long tag = message.getMessageProperties().getDeliveryTag();
         if (listener == null) {
             LOG.warn("No event listener registered");
+            channel.basicNack(tag, false, false);
             return;
         }
         String rawString = new String(message.getBody(), StandardCharsets.UTF_8);
@@ -37,6 +39,7 @@ public class PubSubListenerConfig {
             event = JsonUtil.deserialize(rawString, Event.class);
         } catch (Exception e) {
             LOG.error("[amqp] Invalid Event received", e);
+            channel.basicNack(tag, false, false);
             return;
         }
         if (event == null) {
@@ -44,9 +47,13 @@ public class PubSubListenerConfig {
             return;
         }
         RequestContextHolder.set(event.getContext());
-        TenantHolder.use(event.getTenantId(), () -> {
+        try {
             listener.handle(event);
-        });
+            channel.basicAck(tag, false);
+        } catch (Exception e) {
+            LOG.error("[amqp] failed to process event %s (%s) -- %s", event.getAction(), event.getId());
+            channel.basicNack(tag, false, true);
+        }
     }
 
 }

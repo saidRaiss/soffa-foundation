@@ -88,6 +88,7 @@ public final class JsonUtil {
         return MAPPER.readValue(jsonString, type);
     }
 
+    @SuppressWarnings("unchecked")
     @SneakyThrows
     public static <T> T convert(Object input, Class<T> type) {
         if (input == null) {
@@ -95,6 +96,9 @@ public final class JsonUtil {
         }
         if (type.isInstance(input)) {
             return type.cast(input);
+        }
+        if (type == String.class) {
+            return (T)MAPPER.writeValueAsString(input);
         }
         return MAPPER.convertValue(input, type);
     }

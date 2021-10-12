@@ -1,5 +1,6 @@
 package io.soffa.foundation.spring.config.amqp;
 
+import com.google.common.collect.ImmutableMap;
 import io.soffa.foundation.commons.IDs;
 import io.soffa.foundation.commons.JsonUtil;
 import io.soffa.foundation.commons.Logger;
@@ -13,9 +14,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import java.util.Map;
+
 @Configuration
 public class RabbitMQConfig {
 
+    private static final String DLQ = ".dlq";
+    private static final String TOPIC = ".topic";
+    private static final String FANOUT = ".fanout";
     private static final Logger LOG = Logger.get(RabbitMQConfig.class);
     static boolean embeddedMode;
     private final RabbitTemplate rabbitTemplate;
@@ -32,22 +38,43 @@ public class RabbitMQConfig {
 
     @Bean
     Queue queue() {
-        return new Queue(applicationName);
+        Map<String, Object> args = ImmutableMap.of(
+            "x-dead-letter-exchange", exchange + DLQ,
+            "x-dead-letter-routing-key", routing + "." + applicationName,
+            "x-message-ttl", 5000
+        );
+
+        return new Queue(applicationName, true, false, false, args);
+    }
+
+    @Bean
+    Queue deadLetterQueue() {
+        return new Queue(applicationName + DLQ);
     }
 
     @Bean
     TopicExchange createTopicExchange() {
-        return new TopicExchange(exchange + ".topic", true, false);
+        return new TopicExchange(exchange + TOPIC, true, false);
+    }
+
+    @Bean
+    TopicExchange createDeadLetterExchange() {
+        return new TopicExchange(exchange + DLQ, true, false);
     }
 
     @Bean
     public FanoutExchange createFanoutExchange() {
-        return new FanoutExchange(exchange + ".fanout", true, false);
+        return new FanoutExchange(exchange + FANOUT, true, false);
     }
 
     @Bean
-    Binding createTopicBinding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(routing + "." + applicationName);
+    Binding createTopicBinding() {
+        return BindingBuilder.bind(queue()).to(createTopicExchange()).with(routing + "." + applicationName);
+    }
+
+    @Bean
+    Binding createDQLBinding() {
+        return BindingBuilder.bind(deadLetterQueue()).to(createDeadLetterExchange()).with(routing + "." + applicationName);
     }
 
     @Bean
@@ -65,7 +92,7 @@ public class RabbitMQConfig {
                 if (TextUtil.isEmpty(event.getId())) {
                     event.setId(IDs.secureRandomId("evt_"));
                 }
-                rabbitTemplate.convertAndSend(exchange + ".topic", routing + "." + target, JsonUtil.serialize(event).getBytes());
+                rabbitTemplate.convertAndSend(exchange + TOPIC, routing + "." + target, JsonUtil.serialize(event).getBytes());
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("[PUB-SUB] Message sent to %s - @action:%s", target, event.getAction());
                 }
@@ -73,7 +100,7 @@ public class RabbitMQConfig {
 
             @Override
             public void broadcast(Event event) {
-                rabbitTemplate.convertAndSend(exchange + ".fanout", routing + ".*", JsonUtil.serialize(event).getBytes());
+                rabbitTemplate.convertAndSend(exchange + FANOUT, routing + ".*", JsonUtil.serialize(event).getBytes());
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("[PUB-SUB] Message broadcasted to %s.* - @action:%s", routing, event.getAction());
                 }

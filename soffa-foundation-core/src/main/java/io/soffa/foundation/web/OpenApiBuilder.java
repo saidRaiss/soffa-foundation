@@ -3,6 +3,7 @@ package io.soffa.foundation.web;
 import com.google.common.base.Preconditions;
 import io.soffa.foundation.commons.CollectionUtil;
 import io.soffa.foundation.commons.TextUtil;
+import io.soffa.foundation.core.ApiHeaders;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -68,7 +69,7 @@ public class OpenApiBuilder {
         }
 
         if (flows > 0) {
-            components.addSecuritySchemes(SecurityScheme.Type.OAUTH2.name().toUpperCase(),
+            components.addSecuritySchemes(ApiHeaders.OAUTH2,
                 new SecurityScheme()
                     .description("OAuth2 OpenID Connect")
                     .type(SecurityScheme.Type.OAUTH2)
@@ -81,7 +82,7 @@ public class OpenApiBuilder {
         if (!desc.getSecurity().isJwtBearer()) {
             return;
         }
-        components.addSecuritySchemes("JWT",
+        components.addSecuritySchemes(ApiHeaders.JWT,
             new SecurityScheme()
                 .description("JWT Beader Auth")
                 .scheme("bearer")

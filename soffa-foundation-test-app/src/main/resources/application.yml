@@ -1,7 +1,6 @@
 spring.application.name: foundation
 
 app.package: io.soffa.foundation
-
 app.sys-logs.enabled: true
 
 app.openapi:

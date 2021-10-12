@@ -1,6 +1,6 @@
 spring.application.name: test
 
-
+app.package: io.soffa
 app.db.links:
   default: h2://mem/test_${random.int}
   T1: h2://mem/t1_${random.int}

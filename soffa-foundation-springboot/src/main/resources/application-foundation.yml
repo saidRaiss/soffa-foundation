@@ -9,8 +9,6 @@ logging.level.foundation: ${PLATFORM_LOG_LEVEL:INFO}
 logging.level.app: ${LOG_LEVEL:INFO}
 logging.level.service: ${LOG_LEVEL:INFO}
 
-app.package: app
-
 spring.jackson:
   default-property-inclusion: non_null
 

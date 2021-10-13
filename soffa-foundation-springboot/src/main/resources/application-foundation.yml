@@ -22,8 +22,8 @@ spring.rabbitmq:
   listener.simple.retry:
     enabled: true
     initial-interval: 2s
-    max-attempts: 10
-    max-interval: 30s
+    max-attempts: 30
+    max-interval: 300s
     multiplier: 2
   addresses: ${app.amqp.addresses:embedded}
   username: ${app.amqp.username:guest}

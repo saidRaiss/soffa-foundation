@@ -40,8 +40,7 @@ public class RabbitMQConfig {
     Queue queue() {
         Map<String, Object> args = ImmutableMap.of(
             "x-dead-letter-exchange", exchange + DLQ,
-            "x-dead-letter-routing-key", routing + "." + applicationName,
-            "x-message-ttl", 5000
+            "x-dead-letter-routing-key", routing + "." + applicationName
         );
 
         return new Queue(applicationName, true, false, false, args);

@@ -98,7 +98,7 @@ public final class JsonUtil {
             return type.cast(input);
         }
         if (type == String.class) {
-            return (T)MAPPER.writeValueAsString(input);
+            return (T) MAPPER.writeValueAsString(input);
         }
         return MAPPER.convertValue(input, type);
     }

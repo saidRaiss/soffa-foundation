@@ -13,7 +13,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     api("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-    implementation("org.springframework.cloud:spring-cloud-starter-sleuth:3.0.3")
+    implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("net.logstash.logback:logstash-logback-encoder:6.6")
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-amqp")

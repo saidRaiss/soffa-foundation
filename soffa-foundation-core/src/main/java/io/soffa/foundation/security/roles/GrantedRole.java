@@ -1,4 +1,4 @@
-package io.soffa.foundation.context;
+package io.soffa.foundation.security.roles;
 
 public interface GrantedRole {
 

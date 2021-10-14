@@ -35,6 +35,10 @@ public class S3Client implements ObjectStorageClient {
         this.defaultBucketName = defaultBucketName;
     }
 
+    public S3Client(S3config config) {
+        this(config.getEndpoint(), config.getAccessKey(), config.getSecretKey(), config.getBucket());
+    }
+
     @SneakyThrows
     public S3Client(String endpoint, String accessKey, String secretKey) {
         try {

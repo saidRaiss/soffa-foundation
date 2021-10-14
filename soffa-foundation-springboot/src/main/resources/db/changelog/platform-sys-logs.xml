@@ -57,8 +57,8 @@
     </changeSet>
 
     <changeSet id="202110121640_ChangeUserColumn" author="gahissy.titus">
-        <renameColumn tableName="${table_prefix}sys_logs" oldColumnName="user" newColumnName="user_id" />
-        <renameColumn tableName="${table_prefix}sys_logs_archive" oldColumnName="user" newColumnName="user_id" />
+        <renameColumn tableName="${table_prefix}sys_logs" oldColumnName="user" newColumnName="user_id"/>
+        <renameColumn tableName="${table_prefix}sys_logs_archive" oldColumnName="user" newColumnName="user_id"/>
 
     </changeSet>
 

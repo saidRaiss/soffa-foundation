@@ -10,6 +10,8 @@ import org.hamcrest.Matchers;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.function.Consumer;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public class HttpResult {
@@ -92,6 +94,12 @@ public class HttpResult {
     @SneakyThrows
     public HttpResult json(String path, String value) {
         result.andExpect(jsonPath(path).value(Matchers.equalTo(value)));
+        return this;
+    }
+
+    @SneakyThrows
+    public HttpResult json(Consumer<JsonAssert> tester) {
+        tester.accept(new JsonAssert(result));
         return this;
     }
 

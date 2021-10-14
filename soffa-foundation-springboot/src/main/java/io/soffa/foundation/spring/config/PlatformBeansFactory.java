@@ -12,11 +12,18 @@ import io.soffa.foundation.data.DbConfig;
 import io.soffa.foundation.data.SysLogRepository;
 import io.soffa.foundation.metrics.MetricsRegistry;
 import io.soffa.foundation.metrics.NoopMetricsRegistryImpl;
+import io.soffa.foundation.s3.ObjectStorageClient;
+import io.soffa.foundation.s3.S3Client;
+import io.soffa.foundation.s3.S3config;
+import io.soffa.foundation.support.mail.EmailSender;
+import io.soffa.foundation.support.mail.adapters.MailerConfig;
+import io.soffa.foundation.support.mail.adapters.SmtpEmailSender;
 import io.soffa.foundation.web.OpenAPIDesc;
 import io.soffa.foundation.web.OpenApiBuilder;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +32,30 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Set;
 
 @Configuration
 public class PlatformBeansFactory {
+
+    @Bean
+    public RestTemplate createDefaultRestTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    @ConditionalOnBean(S3config.class)
+    public ObjectStorageClient createS3Client(S3config config) {
+        return new S3Client(config);
+    }
+
+    @Bean
+    @ConditionalOnBean(MailerConfig.class)
+    public EmailSender createEmailSender(MailerConfig config) {
+        config.afterPropertiesSet();
+        return new SmtpEmailSender(config);
+    }
 
     @SuppressWarnings("unchecked")
     @Bean

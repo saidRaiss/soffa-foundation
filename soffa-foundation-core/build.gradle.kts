@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     api(project(":soffa-foundation-api"))
+    api(project(":soffa-foundation-models"))
 
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
     implementation("com.nimbusds:nimbus-jose-jwt:9.15.2")
@@ -17,7 +18,7 @@ dependencies {
     api("org.hibernate.validator:hibernate-validator-annotation-processor:7.0.1.Final")
     api("org.hibernate.validator:hibernate-validator:7.0.1.Final")
     api("org.checkerframework:checker-qual:3.18.1")
-    api("com.amazonaws:aws-java-sdk-s3:1.12.84")
+    api("com.amazonaws:aws-java-sdk-s3:1.12.85")
     api("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final")
     api("org.jobrunr:jobrunr:4.0.0") {
         exclude(group = "com.zaxxer")
@@ -28,6 +29,7 @@ dependencies {
     api("org.liquibase:liquibase-core:4.4.3")
     api("com.h2database:h2:1.4.200")
     api("commons-beanutils:commons-beanutils:1.9.4")
+    implementation("org.apache.commons:commons-email:1.5")
 
 }
 

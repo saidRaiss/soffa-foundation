@@ -19,7 +19,7 @@ public final class RequestContextHolder {
                 CURRENT.remove();
             } else {
                 CURRENT.set(value);
-                if (value.getTenantId()!=null) {
+                if (value.getTenantId() != null) {
                     TenantHolder.set(value.getTenantId());
                 }
 

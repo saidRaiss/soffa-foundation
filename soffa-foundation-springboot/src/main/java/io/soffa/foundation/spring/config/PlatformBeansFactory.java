@@ -46,12 +46,14 @@ public class PlatformBeansFactory {
 
     @Bean
     @ConditionalOnBean(S3config.class)
+    @ConditionalOnMissingBean
     public ObjectStorageClient createS3Client(S3config config) {
         return new S3Client(config);
     }
 
     @Bean
     @ConditionalOnBean(MailerConfig.class)
+    @ConditionalOnMissingBean
     public EmailSender createEmailSender(MailerConfig config) {
         config.afterPropertiesSet();
         return new SmtpEmailSender(config);

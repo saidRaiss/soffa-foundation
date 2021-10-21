@@ -3,6 +3,7 @@ package io.soffa.foundation.core.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Map;
 import java.util.Set;
 
 @Data
@@ -16,5 +17,6 @@ public class Authentication {
     private Set<String> roles;
     private Set<String> groups;
     private Set<String> permissions;
+    private Map<String, Object> claims;
 
 }

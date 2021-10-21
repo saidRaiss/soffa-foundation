@@ -30,7 +30,7 @@ public class SmtpEmailSender implements EmailSender {
             ));
         }
         email.setDebug(false);
-        email.setHostName("smtp.gmail.com");
+        email.setHostName("smtp.gmail.com"); // ERROR
 
         if (message.getSender() != null) {
             email.setFrom(message.getSender().getAddress(), message.getSender().getName());

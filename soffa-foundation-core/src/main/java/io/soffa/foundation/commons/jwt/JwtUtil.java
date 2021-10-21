@@ -1,7 +1,7 @@
 package io.soffa.foundation.commons.jwt;
 
 import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.DirectEncrypter;
+import com.nimbusds.jose.crypto.AESEncrypter;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -14,8 +14,11 @@ import io.soffa.foundation.exceptions.TechnicalException;
 import lombok.SneakyThrows;
 import org.json.JSONObject;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
@@ -32,7 +35,7 @@ public final class JwtUtil {
     public static String create(final String issuer, final String secretKey,
                                 final String subject, final Map<String, Object> claims,
                                 final int timeToLiveInMinutes) {
-        return create(issuer, secretKey, subject, claims, timeToLiveInMinutes, EncryptionMethod.A128GCM);
+        return create(issuer, secretKey, subject, claims, timeToLiveInMinutes, EncryptionMethod.A128CBC_HS256);
     }
 
     @SneakyThrows
@@ -52,8 +55,9 @@ public final class JwtUtil {
 
         try {
             Payload payload = new Payload(claimsSet.toJSONObject());
-            JWEHeader header = new JWEHeader(JWEAlgorithm.DIR, encryptionMethod);
-            DirectEncrypter encrypter = new DirectEncrypter(secretKey.getBytes());
+            SecretKey key = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), 0, secretKey.length(), "AES");
+            JWEHeader header = new JWEHeader(JWEAlgorithm.A128KW, encryptionMethod);
+            AESEncrypter encrypter = new AESEncrypter(key);
             JWEObject jweObject = new JWEObject(header, payload);
             jweObject.encrypt(encrypter);
             return jweObject.serialize();

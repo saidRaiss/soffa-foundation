@@ -47,7 +47,7 @@ public class SecurityBeansFactory {
 
     @Bean
     @ConditionalOnBean(JwtEncoderConfig.class)
-    public JwtEncoder createJwtEncoder(JwtEncoderConfig config) {
+    public DefaultJwtEncoder createJwtEncoder(JwtEncoderConfig config) {
         return new DefaultJwtEncoder(config);
     }
 }

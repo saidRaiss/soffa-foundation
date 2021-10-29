@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public final class JwtUtil {
@@ -30,46 +31,45 @@ public final class JwtUtil {
     private JwtUtil() {
     }
 
-    //
-
     @SneakyThrows
     public static String create(final String issuer, final String secretKey,
                                 final String subject, final Map<String, Object> claims,
                                 final int timeToLiveInMinutes) {
-
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
-
         final Date issuedAt = new Date();
-
         JWTCreator.Builder builder = JWT.create()
             .withIssuedAt(issuedAt)
             .withSubject(subject)
             .withExpiresAt(DateUtil.plusMinutes(issuedAt, timeToLiveInMinutes))
             .withIssuer(issuer);
-
         for (Map.Entry<String, Object> claim : claims.entrySet()) {
-            Object value = claim.getValue();
-            String name = claim.getKey();
-            if (value instanceof Integer) {
-                builder.withClaim(name, (Integer)value);
-            }else if (value instanceof Double) {
-                builder.withClaim(name, (Double)value);
-            }else if (value instanceof Long) {
-                builder.withClaim(name, (Long)value);
-            }else if (value instanceof Boolean) {
-                builder.withClaim(name, (Boolean) value);
-            }else if (value instanceof Date) {
-                builder.withClaim(name, (Date)value);
-            }else if (value instanceof String) {
-                builder.withClaim(name, value.toString());
-            }else {
-                throw new TechnicalException("Claim type is not supported: %s", value.getClass());
-            }
+            populateClaims(builder, claim.getKey(), claim.getValue());
         }
-
         return builder.sign(algorithm);
     }
 
+    @SuppressWarnings("unchecked")
+    private static void populateClaims(JWTCreator.Builder builder, String name, Object value) {
+        if (value instanceof Integer) {
+            builder.withClaim(name, (Integer) value);
+        } else if (value instanceof Double) {
+            builder.withClaim(name, (Double) value);
+        } else if (value instanceof Long) {
+            builder.withClaim(name, (Long) value);
+        } else if (value instanceof Boolean) {
+            builder.withClaim(name, (Boolean) value);
+        } else if (value instanceof Date) {
+            builder.withClaim(name, (Date) value);
+        } else if (value instanceof String) {
+            builder.withClaim(name, value.toString());
+        } else if (value instanceof List<?>) {
+            builder.withClaim(name, (List<?>) value);
+        } else if (value instanceof Map<?, ?>) {
+            builder.withClaim(name, (Map<String, ?>) value);
+        } else {
+            throw new TechnicalException("Claim type is not supported: %s", value.getClass());
+        }
+    }
 
     @SneakyThrows
     public static String fromJwks(final InputStream jwkSource, final String issuer, final String subject, final Map<String, Serializable> claims) {

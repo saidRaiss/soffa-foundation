@@ -1,7 +1,6 @@
 package io.soffa.foundation.spring.config;
 
 import io.soffa.foundation.commons.jwt.DefaultJwtEncoder;
-import io.soffa.foundation.commons.jwt.JwtEncoder;
 import io.soffa.foundation.commons.jwt.JwtEncoderConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;

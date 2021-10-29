@@ -21,7 +21,6 @@ public class JwtEcoderTest {
         assertNotNull(jwt.getToken());
         assertEquals("Foundation", jwt.getSubject());
 
-
         Authentication auth = encoder.decode(jwt.getToken()).orElse(null);
         assertNotNull(auth);
 

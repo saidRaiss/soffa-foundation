@@ -1,20 +1,16 @@
 package io.soffa.foundation.commons.jwt;
 
-import com.nimbusds.jose.EncryptionMethod;
-import com.nimbusds.jose.JWEAlgorithm;
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.JWEDecryptionKeySelector;
-import com.nimbusds.jose.proc.JWEKeySelector;
-import com.nimbusds.jose.proc.SimpleSecurityContext;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
-import com.nimbusds.jwt.proc.DefaultJWTProcessor;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.core.model.Authentication;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,19 +39,24 @@ public class DefaultJwtEncoder implements JwtEncoder, JwtDecoder {
     }
 
     @Override
-    public Optional<Authentication> decode(String jwt) {
+    public Optional<Authentication> decode(String token) {
         try {
 
-            byte[] secretKey = config.getSecret().getBytes();
-            // AESEncrypter encrypter = new AESEncrypter(secretKey);
-            ConfigurableJWTProcessor<SimpleSecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
-            JWKSource<SimpleSecurityContext> jweKeySource = new ImmutableSecret<>(secretKey);
-            JWEKeySelector<SimpleSecurityContext> jweKeySelector =
-                new JWEDecryptionKeySelector<>(JWEAlgorithm.A128KW, EncryptionMethod.A128CBC_HS256, jweKeySource);
-            jwtProcessor.setJWEKeySelector(jweKeySelector);
+            Algorithm algorithm = Algorithm.HMAC256(config.getSecret());
+            JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer(config.getIssuer())
+                .build(); //Reusable verifier instance
+            DecodedJWT jwt = verifier.verify(token);
 
-            JWTClaimsSet claimsSet = jwtProcessor.process(jwt, null);
-            return Optional.of(extractInfo(new Jwt(jwt, claimsSet.getSubject(), claimsSet.getClaims())));
+            Map<String, Claim> baseClaims = jwt.getClaims();
+
+            Map<String, Object> claims = new HashMap<>();
+            for (Map.Entry<String, Claim> entry : baseClaims.entrySet()) {
+                claims.put(entry.getKey(), entry.getValue().asString());
+            }
+
+            return Optional.of(extractInfo(new Jwt(token, jwt.getSubject(), claims)));
+
         } catch (Exception e) {
             LOG.error(e);
             return Optional.empty();

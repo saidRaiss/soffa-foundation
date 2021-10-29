@@ -1,7 +1,11 @@
 package io.soffa.foundation.commons.jwt;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.AESEncrypter;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -14,11 +18,8 @@ import io.soffa.foundation.exceptions.TechnicalException;
 import lombok.SneakyThrows;
 import org.json.JSONObject;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
@@ -35,35 +36,38 @@ public final class JwtUtil {
     public static String create(final String issuer, final String secretKey,
                                 final String subject, final Map<String, Object> claims,
                                 final int timeToLiveInMinutes) {
-        return create(issuer, secretKey, subject, claims, timeToLiveInMinutes, EncryptionMethod.A128CBC_HS256);
-    }
 
-    @SneakyThrows
-    public static String create(final String issuer, final String secretKey,
-                                final String subject, final Map<String, Object> claims,
-                                final int timeToLiveInMinutes, final EncryptionMethod encryptionMethod) {
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
         final Date issuedAt = new Date();
-        JWTClaimsSet.Builder claimsSetBuilder = new JWTClaimsSet.Builder()
-            .subject(subject)
-            .issuer(issuer)
-            .issueTime(issuedAt)
-            .expirationTime(DateUtil.plusMinutes(issuedAt, timeToLiveInMinutes));
-        for (Map.Entry<String, Object> entry : claims.entrySet()) {
-            claimsSetBuilder.claim(entry.getKey(), entry.getValue());
-        }
-        JWTClaimsSet claimsSet = claimsSetBuilder.build();
 
-        try {
-            Payload payload = new Payload(claimsSet.toJSONObject());
-            SecretKey key = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), 0, secretKey.length(), "AES");
-            JWEHeader header = new JWEHeader(JWEAlgorithm.A128KW, encryptionMethod);
-            AESEncrypter encrypter = new AESEncrypter(key);
-            JWEObject jweObject = new JWEObject(header, payload);
-            jweObject.encrypt(encrypter);
-            return jweObject.serialize();
-        } catch (JOSEException e) {
-            throw new TechnicalException("Unable to create JWT", e);
+        JWTCreator.Builder builder = JWT.create()
+            .withIssuedAt(issuedAt)
+            .withSubject(subject)
+            .withExpiresAt(DateUtil.plusMinutes(issuedAt, timeToLiveInMinutes))
+            .withIssuer(issuer);
+
+        for (Map.Entry<String, Object> claim : claims.entrySet()) {
+            Object value = claim.getValue();
+            String name = claim.getKey();
+            if (value instanceof Integer) {
+                builder.withClaim(name, (Integer)value);
+            }else if (value instanceof Double) {
+                builder.withClaim(name, (Double)value);
+            }else if (value instanceof Long) {
+                builder.withClaim(name, (Long)value);
+            }else if (value instanceof Boolean) {
+                builder.withClaim(name, (Boolean) value);
+            }else if (value instanceof Date) {
+                builder.withClaim(name, (Date)value);
+            }else if (value instanceof String) {
+                builder.withClaim(name, value.toString());
+            }else {
+                throw new TechnicalException("Claim type is not supported: %s", value.getClass());
+            }
         }
+
+        return builder.sign(algorithm);
     }
 
 

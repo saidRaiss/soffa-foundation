@@ -1,6 +1,8 @@
 package io.soffa.foundation.commons;
 
 
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.soffa.foundation.exceptions.TechnicalException;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.reflect.TypeUtils;
@@ -73,6 +75,11 @@ public class ClassUtil {
         } else {
             throw new TechnicalException("getGenericType failed");
         }
+    }
+
+    public static ParameterizedType constructParametricType(Class<?> parametrized, Class<?> parameterClass) {
+        JavaType type = new ObjectMapper().getTypeFactory().constructParametricType(parametrized, parameterClass);
+        return (ParameterizedType)type;
     }
 
     @SneakyThrows

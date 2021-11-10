@@ -28,11 +28,20 @@ public interface JwtDecoder {
         profile.setNickname(jwt.lookupClaim("nickname", "nick_name", "pseudo", "alias").orElse(null));
 
         Set<String> permissions = new HashSet<>();
+        Set<String> roles = new HashSet<>();
 
         jwt.lookupClaim("permissions", "grants").ifPresent(s -> {
             for (String item : s.split(",")) {
                 if (TextUtil.isNotEmpty(item)) {
                     permissions.add(item.toLowerCase());
+                }
+            }
+        });
+
+        jwt.lookupClaim("roles").ifPresent(s -> {
+            for (String item : s.split(",")) {
+                if (TextUtil.isNotEmpty(item)) {
+                    roles.add(item.toLowerCase());
                 }
             }
         });
@@ -43,6 +52,7 @@ public interface JwtDecoder {
             tenantId(tenant).
             application(jwt.lookupClaim("applicationName", "application", "applicationId", "app").orElse(null)).
             profile(profile).
+            roles(roles).
             permissions(permissions).
             build();
     }

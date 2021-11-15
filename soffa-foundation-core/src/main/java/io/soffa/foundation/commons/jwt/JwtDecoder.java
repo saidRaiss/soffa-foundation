@@ -33,7 +33,7 @@ public interface JwtDecoder {
         jwt.lookupClaim("permissions", "grants").ifPresent(s -> {
             for (String item : s.split(",")) {
                 if (TextUtil.isNotEmpty(item)) {
-                    permissions.add(item.toLowerCase());
+                    permissions.add(item.trim().toLowerCase());
                 }
             }
         });
@@ -41,7 +41,7 @@ public interface JwtDecoder {
         jwt.lookupClaim("roles").ifPresent(s -> {
             for (String item : s.split(",")) {
                 if (TextUtil.isNotEmpty(item)) {
-                    roles.add(item.toLowerCase());
+                    roles.add(item.trim().toLowerCase());
                 }
             }
         });

@@ -1,27 +1,41 @@
 package io.soffa.foundation.support.mail.adapters;
 
 import io.soffa.foundation.commons.CollectionUtil;
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.exceptions.TechnicalException;
 import io.soffa.foundation.models.mail.Email;
 import io.soffa.foundation.models.mail.EmailAddress;
 import io.soffa.foundation.models.mail.EmailId;
 import io.soffa.foundation.support.mail.EmailSender;
-import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
+import org.jetbrains.annotations.NotNull;
 
-@AllArgsConstructor
 public class SmtpEmailSender implements EmailSender {
 
-    private MailerConfig config;
+    private static final Logger LOG = Logger.get(SmtpEmailSender.class);
+    private final MailerConfig config;
+
+    public SmtpEmailSender(MailerConfig config) {
+        config.afterPropertiesSet();
+        this.config = config;
+    }
 
     @SneakyThrows
     @Override
     public EmailId send(Email message) {
         check(message);
+        HtmlEmail email = createMessage(message);
+        return new EmailId(email.send());
+    }
+
+    @NotNull
+    private HtmlEmail createMessage(Email message) throws EmailException {
         HtmlEmail email = new HtmlEmail();
+        email.setHostName(config.getHostname()); // ERROR
         email.setSmtpPort(config.getPort());
         if (config.hasCredentials()) {
             email.setAuthenticator(new DefaultAuthenticator(
@@ -29,8 +43,7 @@ public class SmtpEmailSender implements EmailSender {
                 config.getPassword()
             ));
         }
-        email.setDebug(false);
-        email.setHostName("smtp.gmail.com"); // ERROR
+        email.setDebug(LOG.isDebugEnabled());
 
         if (message.getSender() != null) {
             email.setFrom(message.getSender().getAddress(), message.getSender().getName());
@@ -50,7 +63,7 @@ public class SmtpEmailSender implements EmailSender {
         for (EmailAddress bcc : message.getBcc()) {
             email.addBcc(bcc.getAddress(), bcc.getName());
         }
-        return new EmailId(email.send());
+        return email;
     }
 
     void check(Email message) {

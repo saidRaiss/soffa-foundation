@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(properties = {
     "app.mail.provider=smtp",
-    "app.mail.server=smtp.google.com:587",
+    "app.mail.hostname=smtp.google.com:587",
     "app.mail.username=foo",
     "app.mail.password=s3cret",
 })
@@ -26,9 +26,9 @@ public class EmailClientTest {
     private MailerConfig config;
 
     @Test
-    public void testObjectStorageClient() {
+    public void testMailerConfig() {
         assertNotNull(config);
-        assertEquals("smtp.google.com", config.getServer());
+        assertEquals("smtp.google.com", config.getHostname());
         assertEquals(587, config.getPort());
         assertEquals("foo", config.getUsername());
         assertEquals("s3cret", config.getPassword());

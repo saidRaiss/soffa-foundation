@@ -55,7 +55,6 @@ public class PlatformBeansFactory {
     @ConditionalOnBean(MailerConfig.class)
     @ConditionalOnMissingBean
     public EmailSender createEmailSender(MailerConfig config) {
-        config.afterPropertiesSet();
         return new SmtpEmailSender(config);
     }
 

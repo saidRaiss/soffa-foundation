@@ -8,7 +8,7 @@ public class MailerConfig {
 
     private int port = 25;
     private String provider;
-    private String server;
+    private String hostname;
     private String username;
     private String password;
     private String sender;
@@ -18,12 +18,12 @@ public class MailerConfig {
     }
 
     public void afterPropertiesSet() {
-        if (TextUtil.isEmpty(server)) {
+        if (TextUtil.isEmpty(hostname)) {
             return;
         }
-        if (server.contains(":")) {
-            String[] parts = server.split(":");
-            server = parts[0];
+        if (hostname.contains(":")) {
+            String[] parts = hostname.split(":");
+            hostname = parts[0];
             port = Integer.parseInt(parts[1]);
         }
     }

@@ -40,8 +40,7 @@ jobs:
       - name: Publish artifact to public Sonatype Nexus
         run: |
           echo $SONATYPE_GPG | base64 -d > $HOME/.sonatype-keys.gpg
-          gradle sign -x check publishMavenPublicationToSonatypeRepository closeAndReleaseSonatypeStagingRepository \
-            -Psonatype=true \
+          gradle sign -x check publishMavenPublicationToSonatypeRepository closeAndReleaseSonatypeStagingRepository -Psonatype=true \
             -PossrhUsername=$SONATYPE_USERNAME \
             -PossrhPassword=$SONATYPE_PASSWORD \
             -Psigning.keyId=$SIGNING_KEYID  \

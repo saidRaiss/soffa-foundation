@@ -86,6 +86,16 @@ public class RequestFilter extends OncePerRequestFilter {
                 if (context.getTenantId() != null) {
                     permissions.add(new SimpleGrantedAuthority(GrantedRole.HAS_TENANT_ID));
                 }
+                if(auth.get().getRoles() != null){
+                    for (String role : auth.get().getRoles()) {
+                        permissions.add(new SimpleGrantedAuthority(role));
+                    }
+                }
+                if(auth.get().getPermissions() != null){
+                    for (String permission : auth.get().getPermissions()) {
+                        permissions.add(new SimpleGrantedAuthority(permission));
+                    }
+                }
                 context.setAuthentication(auth.get());
                 context.setAuthorization(token);
                 UsernamePasswordAuthenticationToken authz = new UsernamePasswordAuthenticationToken(context, null, permissions);

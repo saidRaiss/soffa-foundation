@@ -45,7 +45,10 @@ public class Email {
 
     @JsonIgnore
     public boolean hasMessage() {
-        return textMessage != null && htmlMessage != null && !textMessage.isEmpty() && !htmlMessage.isEmpty();
+        if (textMessage != null && !textMessage.trim().isEmpty()) {
+            return true;
+        }
+        return htmlMessage != null && !htmlMessage.trim().isEmpty();
     }
 
 }

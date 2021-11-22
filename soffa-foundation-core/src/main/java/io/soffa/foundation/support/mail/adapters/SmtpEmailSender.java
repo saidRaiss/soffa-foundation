@@ -29,6 +29,7 @@ public class SmtpEmailSender implements EmailSender {
     public EmailId send(Email message) {
         check(message);
         HtmlEmail email = createMessage(message);
+
         return new EmailId(email.send());
     }
 
@@ -37,6 +38,7 @@ public class SmtpEmailSender implements EmailSender {
         HtmlEmail email = new HtmlEmail();
         email.setHostName(config.getHostname()); // ERROR
         email.setSmtpPort(config.getPort());
+        email.setStartTLSEnabled(config.isTls());
         if (config.hasCredentials()) {
             email.setAuthenticator(new DefaultAuthenticator(
                 config.getUsername(),
@@ -57,11 +59,15 @@ public class SmtpEmailSender implements EmailSender {
         for (EmailAddress to : message.getTo()) {
             email.addTo(to.getAddress(), to.getName());
         }
-        for (EmailAddress cc : message.getCc()) {
-            email.addCc(cc.getAddress(), cc.getName());
+        if (message.getCc() != null) {
+            for (EmailAddress cc : message.getCc()) {
+                email.addCc(cc.getAddress(), cc.getName());
+            }
         }
-        for (EmailAddress bcc : message.getBcc()) {
-            email.addBcc(bcc.getAddress(), bcc.getName());
+        if (message.getBcc() != null) {
+            for (EmailAddress bcc : message.getBcc()) {
+                email.addBcc(bcc.getAddress(), bcc.getName());
+            }
         }
         return email;
     }

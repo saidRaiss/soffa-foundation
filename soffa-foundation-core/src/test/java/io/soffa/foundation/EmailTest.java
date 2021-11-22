@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EmailAddressTest {
+public class EmailTest {
 
     @Test
     public void testEmailAddress() {
@@ -30,5 +30,6 @@ public class EmailAddressTest {
         assertEquals(address, email.getAddress());
 
     }
+
 
 }

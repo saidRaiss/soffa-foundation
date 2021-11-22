@@ -2,8 +2,10 @@ package io.soffa.foundation.support.mail.adapters;
 
 import io.soffa.foundation.commons.TextUtil;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class MailerConfig {
 
     private int port = 25;
@@ -12,6 +14,14 @@ public class MailerConfig {
     private String username;
     private String password;
     private String sender;
+    private boolean tls;
+
+    public MailerConfig(String provider, String hostname, String username, String password) {
+        this.provider = provider;
+        this.hostname = hostname;
+        this.username = username;
+        this.password = password;
+    }
 
     public boolean hasCredentials() {
         return TextUtil.isNotEmpty(username);

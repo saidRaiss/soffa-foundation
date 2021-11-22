@@ -31,7 +31,6 @@ import java.util.Optional;
 @ControllerAdvice
 class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    //private final MeterRegistry meterRegistry;
     private static final Logger LOG = Logger.get(CustomRestExceptionHandler.class);
     private final Environment environment;
 
@@ -59,6 +58,7 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", new Date());
+        body.put("source", environment.getRequiredProperty("spring.application.name"));
         body.put("kind", error.getClass().getSimpleName());
         body.put("status", status.value());
         body.put("message", message);

@@ -18,16 +18,16 @@ dependencies {
     api("org.hibernate.validator:hibernate-validator-annotation-processor:7.0.1.Final")
     api("org.hibernate.validator:hibernate-validator:7.0.1.Final")
     api("org.checkerframework:checker-qual:3.18.1")
-    api("com.amazonaws:aws-java-sdk-s3:1.12.90")
+    api("com.amazonaws:aws-java-sdk-s3:1.12.111")
     implementation("com.auth0:java-jwt:3.18.2")
     api("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final")
-    api("org.jobrunr:jobrunr:4.0.0") {
+    api("org.jobrunr:jobrunr:4.0.1") {
         exclude(group = "com.zaxxer")
     }
     api("org.jdbi:jdbi3-core:3.23.0") {
         exclude(group = "com.github.ben-manes.caffeine")
     }
-    api("org.liquibase:liquibase-core:4.4.3")
+    api("org.liquibase:liquibase-core:4.6.1")
     api("com.h2database:h2:1.4.200")
     api("commons-beanutils:commons-beanutils:1.9.4")
     implementation("org.apache.commons:commons-email:1.5")

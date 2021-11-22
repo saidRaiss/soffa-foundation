@@ -22,10 +22,10 @@ dependencies {
     compileOnly("javax.servlet:javax.servlet-api:4.0.1")
     api("com.github.fridujo:rabbitmq-mock:1.1.1")
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("org.postgresql:postgresql:42.2.24")
+    implementation("org.postgresql:postgresql:42.3.1")
     // implementation("org.mockito:mockito-core:3.12.4")
-    api("org.springdoc:springdoc-openapi-ui:1.5.11")
-    implementation("org.springdoc:springdoc-openapi-security:1.5.11")
+    api("org.springdoc:springdoc-openapi-ui:1.5.12")
+    implementation("org.springdoc:springdoc-openapi-security:1.5.12")
     testImplementation(project(":soffa-foundation-test"))
 }
 

@@ -119,4 +119,10 @@ public class HttpResult {
         result.andExpect(MockMvcResultMatchers.content().string(content));
         return this;
     }
+
+    @SneakyThrows
+    public String text() {
+        result.andExpect(MockMvcResultMatchers.content().string("text/pain"));
+        return result.andReturn().getResponse().getContentAsString();
+    }
 }

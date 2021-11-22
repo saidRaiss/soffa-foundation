@@ -60,14 +60,15 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
 
     @Override
     protected Object determineCurrentLookupKey() {
-        if (TenantHolder.isEmpty()) {
+        String linkId = TenantHolder.get().orElse(null);
+        if (linkId == null) {
             if (dataSources.containsKey(TenantId.DEFAULT)) {
                 return TenantId.DEFAULT;
             } else if (!appicationStarted) {
                 return NONE;
             }
+            throw new DatabaseException("Missing database link. Don't forget to set active tenant with TenantHolder.set()");
         }
-        String linkId = TenantHolder.get().orElseThrow(() -> new DatabaseException("Missing database link. Don't forget to set active tenant with TenantHolder.set()"));
         if (!dataSources.containsKey(linkId)) {
             throw new DatabaseException("%s is not a valid database link", linkId);
         }

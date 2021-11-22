@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.soffa.foundation.models.files.Attachment;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,10 +46,10 @@ public class Email {
 
     @JsonIgnore
     public boolean hasMessage() {
-        if (textMessage != null && !textMessage.trim().isEmpty()) {
+        if (StringUtils.isNotEmpty(textMessage)) {
             return true;
         }
-        return htmlMessage != null && !htmlMessage.trim().isEmpty();
+        return StringUtils.isNotEmpty(htmlMessage);
     }
 
 }

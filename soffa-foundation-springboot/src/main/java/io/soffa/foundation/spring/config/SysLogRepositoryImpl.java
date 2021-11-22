@@ -3,6 +3,7 @@ package io.soffa.foundation.spring.config;
 import io.soffa.foundation.data.SysLog;
 import io.soffa.foundation.data.SysLogRepository;
 import io.soffa.foundation.data.entities.SysLogEntity;
+import io.soffa.foundation.exceptions.TechnicalException;
 import io.soffa.foundation.spring.SysLogJpaRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,9 +18,13 @@ public class SysLogRepositoryImpl implements SysLogRepository {
 
     @Override
     public void save(SysLog log) {
-        SysLogEntity e = repo.save(SysLogEntity.fromDomain(log));
-        log.setId(e.getId());
-        log.setCreatedAt(e.getCreatedAt());
+        try {
+            SysLogEntity e = repo.save(SysLogEntity.fromDomain(log));
+            log.setId(e.getId());
+            log.setCreatedAt(e.getCreatedAt());
+        }catch (Exception e) {
+            throw new TechnicalException(e.getMessage(), e);
+        }
     }
 
     @Override

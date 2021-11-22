@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,6 +26,7 @@ public class DataSourceTest {
     @Autowired
     private SysLogRepository sysLogs;
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SneakyThrows
     @Test
     public void testDataSource() {
@@ -34,26 +36,31 @@ public class DataSourceTest {
         });
 
 
+        final int t1Count = RandomUtils.nextInt(10, 50);
+        final int t2Count = RandomUtils.nextInt(10, 50);
+
         Map<String, Integer> links = ImmutableMap.of(
-            "T1", RandomUtils.nextInt(100, 300),
-            "T2", RandomUtils.nextInt(100, 500)
+            "T1", t1Count,
+            "T2", t2Count
         );
 
-        final CountDownLatch latch = new CountDownLatch(links.get("T1") + links.get("T2"));
+        final CountDownLatch latch = new CountDownLatch(t1Count + t2Count);
 
         for (final Map.Entry<String, Integer> e : links.entrySet()) {
 
-            TenantHolder.set(e.getKey());
+            final String tenant = e.getKey();
+            TenantHolder.set(tenant);
             assertEquals(0, sysLogs.count());
 
             for (int i = 0; i < e.getValue(); i++) {
-                TenantHolder.submit(e.getKey(), () -> {
+                TenantHolder.execute(tenant, () -> {
                     sysLogs.save(new SysLog("event", IDs.shortUUID()));
                     latch.countDown();
                 });
             }
         }
-        latch.await();
+
+        latch.await(5, TimeUnit.SECONDS);
 
         for (final Map.Entry<String, Integer> e : links.entrySet()) {
             TenantHolder.set(e.getKey());

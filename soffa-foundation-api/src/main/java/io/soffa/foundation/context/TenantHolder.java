@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 public final class TenantHolder {
 
     private static final ThreadLocal<String> CURRENT = new InheritableThreadLocal<>();
-    private static final ExecutorService SC = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private static final ExecutorService SC = Executors.newFixedThreadPool(16);
     public static boolean hasDefault;
 
 
@@ -70,6 +70,17 @@ public final class TenantHolder {
 
     public static void submit(final String tenantId, Runnable runnable) {
         SC.submit(() -> {
+            TenantHolder.set(tenantId);
+            runnable.run();
+        });
+    }
+
+    public static void execute(Runnable runnable) {
+        execute(require(), runnable);
+    }
+
+    public static void execute(final String tenantId, Runnable runnable) {
+        SC.execute(() -> {
             TenantHolder.set(tenantId);
             runnable.run();
         });

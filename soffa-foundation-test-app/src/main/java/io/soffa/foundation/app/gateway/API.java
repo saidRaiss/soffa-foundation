@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import javax.ws.rs.Path;
 
 @Tags(
-    @Tag(name = "app", description = "Default application tag")
+    @Tag(name = "app", description = "Value application tag")
 )
 public interface API {
 

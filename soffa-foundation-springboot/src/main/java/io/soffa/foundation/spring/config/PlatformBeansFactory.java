@@ -12,18 +12,11 @@ import io.soffa.foundation.data.DbConfig;
 import io.soffa.foundation.data.SysLogRepository;
 import io.soffa.foundation.metrics.MetricsRegistry;
 import io.soffa.foundation.metrics.NoopMetricsRegistryImpl;
-import io.soffa.foundation.s3.ObjectStorageClient;
-import io.soffa.foundation.s3.S3Client;
-import io.soffa.foundation.s3.S3config;
-import io.soffa.foundation.support.mail.EmailSender;
-import io.soffa.foundation.support.mail.adapters.MailerConfig;
-import io.soffa.foundation.support.mail.adapters.SmtpEmailSender;
 import io.soffa.foundation.web.OpenAPIDesc;
 import io.soffa.foundation.web.OpenApiBuilder;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -44,19 +37,6 @@ public class PlatformBeansFactory {
         return new RestTemplate();
     }
 
-    @Bean
-    @ConditionalOnBean(S3config.class)
-    @ConditionalOnMissingBean
-    public ObjectStorageClient createS3Client(S3config config) {
-        return new S3Client(config);
-    }
-
-    @Bean
-    @ConditionalOnBean(MailerConfig.class)
-    @ConditionalOnMissingBean
-    public EmailSender createEmailSender(MailerConfig config) {
-        return new SmtpEmailSender(config);
-    }
 
     @SuppressWarnings("unchecked")
     @Bean
@@ -107,7 +87,6 @@ public class PlatformBeansFactory {
         OpenApiBuilder builder = new OpenApiBuilder(desc);
         return builder.build();
     }
-
 
     @Bean
     @ConditionalOnMissingBean(MetricsRegistry.class)

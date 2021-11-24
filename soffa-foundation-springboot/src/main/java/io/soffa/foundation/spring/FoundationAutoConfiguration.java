@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @Configuration
-@ComponentScan({"io.soffa.foundation.spring.config"})
+@ComponentScan({"io.soffa.foundation"})
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 10)
 //@EntityScan(basePackages = "io.soffa.foundation.spring.data")
 //@EnableJpaRepositories(basePackages = "io.soffa.foundation.spring.data")

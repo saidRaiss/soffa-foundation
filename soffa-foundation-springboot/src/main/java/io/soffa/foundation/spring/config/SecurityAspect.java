@@ -22,7 +22,6 @@ public class SecurityAspect {
     private static final Throwable ERR_APP_REQUIRED = new ValidationException("An ApplicationName is required to access this resource.");
     private static final Throwable ERR_TENANT_REQUIRED = new ValidationException("A TenantId is required to access this resource.");
 
-
     @SneakyThrows
     @Before("@within(io.soffa.foundation.annotations.Authenticated) || @annotation(io.soffa.foundation.annotations.Authenticated)")
     public void checkAuthenticated() {

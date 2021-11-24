@@ -23,7 +23,7 @@ jobs:
           distribution: 'adopt'
       - name: Run checks
         run: |
-          gradle test \
+          gradle check \
             -PossrhUsername=foo -PossrhPassword=foo \
             -Psigning.keyId=foo -Psigning.password=foo \
             -Psigning.secretKeyRingFile=foo \

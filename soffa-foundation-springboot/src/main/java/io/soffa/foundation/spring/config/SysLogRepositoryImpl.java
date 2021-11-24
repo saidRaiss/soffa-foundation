@@ -22,7 +22,7 @@ public class SysLogRepositoryImpl implements SysLogRepository {
             SysLogEntity e = repo.save(SysLogEntity.fromDomain(log));
             log.setId(e.getId());
             log.setCreatedAt(e.getCreatedAt());
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new TechnicalException(e.getMessage(), e);
         }
     }

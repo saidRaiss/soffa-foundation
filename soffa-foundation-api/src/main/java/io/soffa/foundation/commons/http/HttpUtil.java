@@ -16,6 +16,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,13 @@ public final class HttpUtil {
 
     @SneakyThrows
     public static OkHttpClient newOkHttpClient() {
+        List<String> candidates = Arrays.asList("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY");
+        for (String candidate : candidates) {
+            String value = System.getenv(candidate);
+            if (TextUtil.isNotEmpty(value)) {
+                return newOkHttpClient(value, true);
+            }
+        }
         return newOkHttpClient(null, true);
     }
 

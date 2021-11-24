@@ -26,5 +26,7 @@ dependencies {
     api("com.github.michaelgantman:MgntUtils:1.5.1.2")
     api("com.joestelmach:natty:0.13")
     api("org.json:json:20210307")
+    api("com.jayway.jsonpath:json-path:2.6.0")
+
 }
 

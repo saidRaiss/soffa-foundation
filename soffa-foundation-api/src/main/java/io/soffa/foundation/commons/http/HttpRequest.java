@@ -1,5 +1,6 @@
 package io.soffa.foundation.commons.http;
 
+import com.google.common.net.HttpHeaders;
 import io.soffa.foundation.commons.TextUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -70,6 +71,11 @@ public class HttpRequest {
                 this.headers.put(e.getKey(), e.getValue());
             }
         }
+    }
+
+    public HttpRequest bearerAuth(String bearerToken) {
+        this.headers.put(HttpHeaders.AUTHORIZATION, "Bearer " + bearerToken);
+        return this;
     }
 
 }

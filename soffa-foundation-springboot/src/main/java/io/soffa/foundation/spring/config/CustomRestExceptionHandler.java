@@ -53,7 +53,7 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleGlobalErrors(Throwable ex) {
         boolean isProduction = environment.acceptsProfiles(Profiles.of("prod", "production"));
         Throwable error = ErrorUtil.unwrap(ex);
-        HttpStatus status = deriverStatus(error);
+        HttpStatus status = deriveStatus(error);
         String message = ErrorUtil.loookupOriginalMessage(error);
 
         Map<String, Object> body = new LinkedHashMap<>();
@@ -84,7 +84,7 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).body(body);
     }
 
-    private HttpStatus deriverStatus(Throwable exception) {
+    private HttpStatus deriveStatus(Throwable exception) {
         if (exception instanceof ValidationException || exception instanceof MethodArgumentNotValidException) {
             return HttpStatus.BAD_REQUEST;
         } else if (exception instanceof ConflictException) {
@@ -97,6 +97,8 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             return HttpStatus.UNAUTHORIZED;
         } else if (exception instanceof ResourceNotFoundException) {
             return HttpStatus.NOT_FOUND;
+        } else if (exception instanceof FunctionalException) {
+            return HttpStatus.BAD_REQUEST;
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }

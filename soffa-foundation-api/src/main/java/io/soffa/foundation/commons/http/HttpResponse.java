@@ -3,7 +3,6 @@ package io.soffa.foundation.commons.http;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import io.soffa.foundation.commons.JsonUtil;
-import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,6 @@ import lombok.SneakyThrows;
 @Builder
 public class HttpResponse {
 
-    private static final Logger logger = Logger.get(HttpResponse.class);
     private int status;
     private String message;
     private String contentType;

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class HttpClient {
 
-    private static final HttpClient instance = new HttpClient();
+    private static final HttpClient INSTANCE = new HttpClient();
     private final OkHttpClient client;
 
     public HttpClient() {
@@ -21,7 +21,7 @@ public class HttpClient {
     }
 
     public static HttpClient getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @SneakyThrows

@@ -1,49 +1,25 @@
 package io.soffa.foundation.commons;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import lombok.SneakyThrows;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-public final class JsonUtil {
+public final class YamlUtil {
 
-    private static final ObjectMapper MAPPER = ObjectFactory.create(new ObjectMapper());
 
-    private JsonUtil() {
-    }
+    private static final ObjectMapper MAPPER = ObjectFactory.create(new YAMLMapper());
 
-    public static boolean isJson(String input) {
-        try {
-            new JSONObject(input);
-            return true;
-        } catch (JSONException e) {
-            return false;
-        }
-    }
-
-    public static String fromXml(String xmlInput) {
-        if (xmlInput == null) return null;
-        return XML.toJSONObject(xmlInput).toString();
+    private YamlUtil() {
     }
 
     @SneakyThrows
-    public static <T> T fromXml(String xmlInput, String root, Class<T> kind) {
-        if (xmlInput == null) {
-            return ClassUtil.newInstance(kind);
-        }
-        JSONObject object = XML.toJSONObject(xmlInput);
-        return deserialize(object.getJSONObject(root).toString(), kind);
-    }
-
-    @SneakyThrows
-    public static <T> T deserialize(String jsonString, Class<T> type) {
-        return ObjectFactory.deserialize(MAPPER, jsonString, type);
+    public static <T> T deserialize(String yamlString, Class<T> type) {
+        return ObjectFactory.deserialize(MAPPER, yamlString, type);
     }
 
     public static <T> T convert(Object input, Class<T> type) {

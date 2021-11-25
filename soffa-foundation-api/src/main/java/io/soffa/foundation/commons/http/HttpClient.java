@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public class HttpClient {
 
+    private static final HttpClient instance = new HttpClient();
     private final OkHttpClient client;
 
     public HttpClient() {
@@ -17,6 +18,10 @@ public class HttpClient {
 
     public HttpClient(OkHttpClient client) {
         this.client = client;
+    }
+
+    public static HttpClient getInstance() {
+        return instance;
     }
 
     @SneakyThrows
@@ -51,7 +56,7 @@ public class HttpClient {
     }
 
     public HttpResponse get(String url) {
-        return request(HttpRequest.get(url));
+        return this.request(HttpRequest.get(url));
     }
 
     public HttpResponse post(String url) {
@@ -85,5 +90,6 @@ public class HttpClient {
     public HttpResponse delete(String url, Object body) {
         return request(HttpRequest.delete(url, body));
     }
+
 
 }

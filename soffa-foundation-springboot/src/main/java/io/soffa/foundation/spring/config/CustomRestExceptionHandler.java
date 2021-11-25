@@ -97,6 +97,8 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             return HttpStatus.UNAUTHORIZED;
         } else if (exception instanceof ResourceNotFoundException) {
             return HttpStatus.NOT_FOUND;
+        } else if (exception instanceof NoContentException) {
+            return HttpStatus.NO_CONTENT;
         } else if (exception instanceof FunctionalException) {
             return HttpStatus.BAD_REQUEST;
         }

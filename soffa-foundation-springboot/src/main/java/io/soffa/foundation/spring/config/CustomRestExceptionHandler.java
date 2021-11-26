@@ -99,6 +99,8 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             return HttpStatus.NOT_FOUND;
         } else if (exception instanceof NoContentException) {
             return HttpStatus.NO_CONTENT;
+        } else if (exception instanceof TodoException) {
+            return HttpStatus.NOT_IMPLEMENTED;
         } else if (exception instanceof FunctionalException) {
             return HttpStatus.BAD_REQUEST;
         }

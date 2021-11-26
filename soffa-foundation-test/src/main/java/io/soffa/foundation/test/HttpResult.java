@@ -44,6 +44,12 @@ public class HttpResult {
     }
 
     @SneakyThrows
+    public HttpResult isNotImplemented() {
+        result.andExpect(MockMvcResultMatchers.status().isNotImplemented());
+        return this;
+    }
+
+    @SneakyThrows
     public HttpResult status(int statusCode) {
         result.andExpect(MockMvcResultMatchers.status().is(statusCode));
         return this;

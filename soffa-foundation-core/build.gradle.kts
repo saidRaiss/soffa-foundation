@@ -11,6 +11,7 @@ dependencies {
 
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
     implementation("com.nimbusds:nimbus-jose-jwt:9.15.2")
+    @Suppress("GradlePackageUpdate")
     implementation("commons-codec:commons-codec:1.15")
     implementation("com.github.michaelgantman:MgntUtils:1.5.1.2")
     api("com.jayway.jsonpath:json-path:2.6.0")
@@ -29,8 +30,9 @@ dependencies {
     }
     api("org.liquibase:liquibase-core:4.6.1")
     api("com.h2database:h2:1.4.200")
+    @Suppress("GradlePackageUpdate")
     api("commons-beanutils:commons-beanutils:1.9.4")
     implementation("org.apache.commons:commons-email:1.5")
-
+    implementation("io.pebbletemplates:pebble:3.1.5")
 }
 

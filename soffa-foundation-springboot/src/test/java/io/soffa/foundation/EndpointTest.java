@@ -27,6 +27,11 @@ public class EndpointTest {
     }
 
     @Test
+    public void testInvalidJwt() {
+        test.get("/secure").bearerAuth("invalid jwt").expect().isUnauthorized();
+    }
+
+    @Test
     public void testSecureEndpoint() {
         test.get("/secure").expect().isUnauthorized();
 
@@ -56,6 +61,7 @@ public class EndpointTest {
             .header("X-ApplicationName", "App")
             .header("X-TenantId", "TX01")
             .expect().isOK();
+
     }
 
 }

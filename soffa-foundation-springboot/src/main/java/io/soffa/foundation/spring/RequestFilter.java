@@ -9,7 +9,6 @@ import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.core.RequestContext;
 import io.soffa.foundation.core.model.Authentication;
 import io.soffa.foundation.core.model.TenantId;
-import io.soffa.foundation.exceptions.UnauthorizedException;
 import io.soffa.foundation.security.roles.GrantedRole;
 import lombok.NoArgsConstructor;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -75,7 +74,12 @@ public class RequestFilter extends OncePerRequestFilter {
                 logger.debug("Bearer authorization header found: %s", token);
                 Optional<Authentication> auth = jwtDecoder.decode(token);
                 if (!auth.isPresent()) {
-                    throw new UnauthorizedException("jwt.invalid");
+                    try {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Bearer token");
+                    } catch (IOException e) {
+                        logger.error(e, e.getMessage());
+                    }
+                    return;
                 }
                 List<GrantedAuthority> permissions = new ArrayList<>();
                 permissions.add(new SimpleGrantedAuthority(GrantedRole.USER));

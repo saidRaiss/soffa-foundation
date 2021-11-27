@@ -1,7 +1,7 @@
 package io.soffa.foundation.spring.config.jobs;
 
 import io.soffa.foundation.actions.ActionDispatcher;
-import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.events.Event;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ public class JobManager implements JobRequestHandler<Job> {
     private JobRunrConfiguration.JobRunrConfigurationResult jobRunr;
 
     public Job enqueue(String description, Event event) {
-        Job job = new Job(IDs.secureRandomId("job_"), event.getTenantId(), description, event);
+        Job job = new Job(IdGenerator.secureRandomId("job_"), event.getTenantId(), description, event);
         jobRunr.getJobRequestScheduler().enqueue(job);
         return job;
     }

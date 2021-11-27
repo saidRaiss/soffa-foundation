@@ -6,13 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
-/**
- * @see IdGenerator
- */
-@Deprecated
-public final class IDs {
+public final class IdGenerator {
 
-    private IDs() {
+    private IdGenerator() {
     }
 
     public static String shortUUID() {

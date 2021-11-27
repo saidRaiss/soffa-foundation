@@ -1,6 +1,6 @@
 package io.soffa.foundation.data.entities;
 
-import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.data.SysLog;
 import lombok.Data;
@@ -43,7 +43,7 @@ public class SysLogEntity {
     @PrePersist
     public void onPrePersist() {
         if (TextUtil.isEmpty(id)) {
-            id = IDs.shortUUID("slog_");
+            id = IdGenerator.shortUUID("slog_");
         }
         if (createdAt == null) {
             createdAt = new Date();

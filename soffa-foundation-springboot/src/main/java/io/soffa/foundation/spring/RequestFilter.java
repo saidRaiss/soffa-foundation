@@ -1,6 +1,6 @@
 package io.soffa.foundation.spring;
 
-import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.commons.jwt.JwtDecoder;
@@ -115,10 +115,10 @@ public class RequestFilter extends OncePerRequestFilter {
         }
 
         if (TextUtil.isEmpty(context.getSpanId())) {
-            context.setSpanId(IDs.shortUUID(prefix));
+            context.setSpanId(IdGenerator.shortUUID(prefix));
         }
         if (TextUtil.isEmpty(context.getTraceId())) {
-            context.setTraceId(IDs.shortUUID(prefix));
+            context.setTraceId(IdGenerator.shortUUID(prefix));
         }
 
         RequestContextHolder.set(context);

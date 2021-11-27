@@ -1,7 +1,7 @@
 package io.soffa.foundation.events;
 
 import com.google.common.base.Preconditions;
-import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.commons.JsonUtil;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.context.RequestContextHolder;
@@ -26,7 +26,7 @@ public class Event implements Serializable {
     private RequestContext context;
 
     public Event() {
-        this.id = IDs.secureRandomId("evt_");
+        this.id = IdGenerator.secureRandomId("evt_");
         context = RequestContextHolder.get().orElse(new RequestContext());
         if (!context.hasTenant() && !TenantHolder.isEmpty()) {
             context.setTenantId(new TenantId(TenantHolder.require()));

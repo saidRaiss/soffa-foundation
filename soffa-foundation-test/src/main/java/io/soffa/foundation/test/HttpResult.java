@@ -38,10 +38,17 @@ public class HttpResult {
     }
 
     @SneakyThrows
+    public HttpResult isCreated() {
+        result.andExpect(MockMvcResultMatchers.status().isCreated());
+        return this;
+    }
+
+    @SneakyThrows
     public HttpResult isBadRequest() {
         result.andExpect(MockMvcResultMatchers.status().isBadRequest());
         return this;
     }
+
 
     @SneakyThrows
     public HttpResult isNotImplemented() {
@@ -128,6 +135,11 @@ public class HttpResult {
 
     @SneakyThrows
     public String text() {
+        return this.string();
+    }
+
+    @SneakyThrows
+    public String string() {
         return result.andReturn().getResponse().getContentAsString();
     }
 }

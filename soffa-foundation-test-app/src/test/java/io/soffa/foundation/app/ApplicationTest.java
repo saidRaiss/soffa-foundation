@@ -1,7 +1,7 @@
 package io.soffa.foundation.app;
 
 import io.soffa.foundation.app.gateway.MessageRepository;
-import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.test.HttpExpect;
 import org.junit.jupiter.api.Test;
@@ -39,8 +39,8 @@ public class ApplicationTest {
         test.get("/ping").
             header("X-Application", "TestApp").
             header("X-TenantId", "T1").
-            header("X-TraceId", IDs.shortUUID("trace-")).
-            header("X-SpanId", IDs.shortUUID("span-")).
+            header("X-TraceId", IdGenerator.shortUUID("trace-")).
+            header("X-SpanId", IdGenerator.shortUUID("span-")).
             expect().isOK().json("$.value", "PONG");
     }
 
@@ -50,8 +50,8 @@ public class ApplicationTest {
         test.get("/ping").
             header("X-Application", "TestApp").
             header("X-TenantId", "T2").
-            header("X-TraceId", IDs.shortUUID("trace-")).
-            header("X-SpanId", IDs.shortUUID("span-")).
+            header("X-TraceId", IdGenerator.shortUUID("trace-")).
+            header("X-SpanId", IdGenerator.shortUUID("span-")).
             expect().is5xxServerError().
             hasJson("$.timestamp").
             hasJson("$.kind").

@@ -1,7 +1,7 @@
 package io.soffa.foundation;
 
 import com.google.common.collect.ImmutableMap;
-import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.data.SysLog;
 import io.soffa.foundation.data.SysLogRepository;
@@ -54,7 +54,7 @@ public class DataSourceTest {
 
             for (int i = 0; i < e.getValue(); i++) {
                 TenantHolder.execute(tenant, () -> {
-                    sysLogs.save(new SysLog("event", IDs.shortUUID()));
+                    sysLogs.save(new SysLog("event", IdGenerator.shortUUID()));
                     latch.countDown();
                 });
             }

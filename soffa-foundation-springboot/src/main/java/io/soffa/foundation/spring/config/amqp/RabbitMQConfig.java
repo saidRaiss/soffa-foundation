@@ -1,7 +1,7 @@
 package io.soffa.foundation.spring.config.amqp;
 
 import com.google.common.collect.ImmutableMap;
-import io.soffa.foundation.commons.IDs;
+import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.commons.JsonUtil;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
@@ -89,7 +89,7 @@ public class RabbitMQConfig {
             @Override
             public void send(String target, Event event) {
                 if (TextUtil.isEmpty(event.getId())) {
-                    event.setId(IDs.secureRandomId("evt_"));
+                    event.setId(IdGenerator.secureRandomId("evt_"));
                 }
                 rabbitTemplate.convertAndSend(exchange + TOPIC, routing + "." + target, JsonUtil.serialize(event).getBytes());
                 if (LOG.isDebugEnabled()) {

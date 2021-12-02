@@ -32,6 +32,7 @@ import java.util.Optional;
 @ControllerAdvice
 class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private static final Map<Class<?>, HttpStatus> MAPPED_STATUS = new LinkedHashMap<>();
     private static final Logger LOG = Logger.get(CustomRestExceptionHandler.class);
     private final Environment environment;
 
@@ -85,31 +86,35 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).body(body);
     }
 
-    @SuppressWarnings("PMD.CyclomaticComplexity")
     private HttpStatus deriveStatus(Throwable exception) {
-        if (exception instanceof ValidationException || exception instanceof MethodArgumentNotValidException) {
-            return HttpStatus.BAD_REQUEST;
-        } else if (exception instanceof ConflictException) {
-            return HttpStatus.CONFLICT;
-        } else if (exception instanceof ResponseStatusException) {
-            return ((ResponseStatusException) exception).getStatus();
-        } else if (exception instanceof ForbiddenException) {
-            return HttpStatus.FORBIDDEN;
-        } else if (exception instanceof UnauthorizedException || exception instanceof AccessDeniedException) {
-            return HttpStatus.UNAUTHORIZED;
-        } else if (exception instanceof ResourceNotFoundException) {
-            return HttpStatus.NOT_FOUND;
-        } else if (exception instanceof NoContentException) {
-            return HttpStatus.NO_CONTENT;
-        } else if (exception instanceof TodoException) {
+        for (Map.Entry<Class<?>, HttpStatus> entry : MAPPED_STATUS.entrySet()) {
+            if (entry.getKey().isAssignableFrom(exception.getClass())) {
+                return entry.getValue();
+            }
+        }
+        if (exception instanceof FunctionalException) {
             return HttpStatus.NOT_IMPLEMENTED;
-        } else if (exception instanceof FunctionalException) {
-            return HttpStatus.BAD_REQUEST;
-        } else if (exception instanceof SocketException || exception instanceof TimeoutException) {
-            return HttpStatus.REQUEST_TIMEOUT;
+        }
+        if (exception instanceof ResponseStatusException) {
+            return ((ResponseStatusException) exception).getStatus();
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
+
+
+    static {
+        MAPPED_STATUS.put(ValidationException.class, HttpStatus.BAD_REQUEST);
+        MAPPED_STATUS.put(MethodArgumentNotValidException.class, HttpStatus.BAD_REQUEST);
+        MAPPED_STATUS.put(ConflictException.class, HttpStatus.CONFLICT);
+        MAPPED_STATUS.put(ForbiddenException.class, HttpStatus.FORBIDDEN);
+        MAPPED_STATUS.put(UnauthorizedException.class, HttpStatus.UNAUTHORIZED);
+        MAPPED_STATUS.put(AccessDeniedException.class, HttpStatus.UNAUTHORIZED);
+        MAPPED_STATUS.put(ResourceNotFoundException.class, HttpStatus.NOT_FOUND);
+        MAPPED_STATUS.put(NoContentException.class, HttpStatus.NO_CONTENT);
+        MAPPED_STATUS.put(TodoException.class, HttpStatus.NOT_IMPLEMENTED);
+        MAPPED_STATUS.put(SocketException.class, HttpStatus.REQUEST_TIMEOUT);
+        MAPPED_STATUS.put(TimeoutException.class, HttpStatus.REQUEST_TIMEOUT);
+    }
 
 }

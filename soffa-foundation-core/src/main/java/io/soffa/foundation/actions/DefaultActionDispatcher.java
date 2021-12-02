@@ -10,6 +10,7 @@ import io.soffa.foundation.core.model.Validatable;
 import io.soffa.foundation.data.SysLog;
 import io.soffa.foundation.data.SysLogRepository;
 import io.soffa.foundation.events.Event;
+import io.soffa.foundation.exceptions.ManagedException;
 import io.soffa.foundation.exceptions.TechnicalException;
 import org.apache.commons.lang.reflect.MethodUtils;
 
@@ -128,9 +129,12 @@ public class DefaultActionDispatcher implements ActionDispatcher {
         try {
             return supplier.get();
         } catch (Exception e) {
-            LOG.error("action %s has failed with message %s", action, ErrorUtil.loookupOriginalMessage(e));
+            LOG.error("Action %s has failed with message %s", action, ErrorUtil.loookupOriginalMessage(e));
             error.set(e);
-            throw e;
+            if (ManagedException.class.isAssignableFrom(e.getClass())) {
+                throw e;
+            }
+            throw new TechnicalException(e.getMessage(), e);
         } finally {
 
             if (sysLogs != null) {

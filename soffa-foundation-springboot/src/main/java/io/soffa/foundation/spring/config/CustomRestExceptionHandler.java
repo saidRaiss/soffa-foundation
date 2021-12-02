@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -84,6 +85,7 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(status).body(body);
     }
 
+    @SuppressWarnings("PMD.CyclomaticComplexity")
     private HttpStatus deriveStatus(Throwable exception) {
         if (exception instanceof ValidationException || exception instanceof MethodArgumentNotValidException) {
             return HttpStatus.BAD_REQUEST;
@@ -103,6 +105,8 @@ class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             return HttpStatus.NOT_IMPLEMENTED;
         } else if (exception instanceof FunctionalException) {
             return HttpStatus.BAD_REQUEST;
+        } else if (exception instanceof SocketException || exception instanceof TimeoutException) {
+            return HttpStatus.REQUEST_TIMEOUT;
         }
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }

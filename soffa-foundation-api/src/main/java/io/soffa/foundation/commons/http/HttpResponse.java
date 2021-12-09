@@ -22,7 +22,7 @@ public class HttpResponse {
     }
 
     public String getMessageOrBody() {
-        if (TextUtil.isEmpty(message)) {
+        if (TextUtil.isNotEmpty(message)) {
             return message;
         }
         return body;

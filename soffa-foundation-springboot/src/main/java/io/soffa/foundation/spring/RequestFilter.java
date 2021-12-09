@@ -57,9 +57,7 @@ public class RequestFilter extends OncePerRequestFilter {
             logger.debug("Tenant found in context", value);
             context.setTenantId(new TenantId(value));
         });
-
         lookupHeader(request, "X-Application", "X-ApplicationName", "X-ApplicationId", "X-App").ifPresent(context::setApplicationName);
-
         lookupHeader(request, "X-TraceId", "X-Trace-Id", "X-RequestId", "X-Request-Id").ifPresent(context::setTraceId);
         lookupHeader(request, "X-SpanId", "X-Span-Id", "X-CorrelationId", "X-Correlation-Id").ifPresent(context::setSpanId);
 

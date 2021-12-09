@@ -108,6 +108,7 @@ org.jobrunr.background-job-server.enabled: ${app.sys-jobs.enabled:false}
 org.jobrunr.dashboard.enabled: ${app.sys-jobs.enabled:false}
 org.jobrunr.database.skip_create: true
 org.jobrunr.dashboard.port: 8000
+junit.jupiter.execution.parallel.enabled: true
 
 ---
 
@@ -127,7 +128,6 @@ spring.cloud.vault:
 spring.config.import:
   - vault://
 
-junit.jupiter.execution.parallel.enabled: true
 
 ---
 

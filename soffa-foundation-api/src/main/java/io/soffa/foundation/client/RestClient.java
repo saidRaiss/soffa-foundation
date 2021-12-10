@@ -46,11 +46,15 @@ public final class RestClient implements InvocationHandler {
 
     @SuppressWarnings("unchecked")
     public static <T> T newInstance(Class<T> clientInterface, String baseUrl) {
+        return newInstance(clientInterface, baseUrl, HttpClient.getInstance());
+    }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T newInstance(Class<T> clientInterface, String baseUrl, HttpClient client) {
         return (T) java.lang.reflect.Proxy.newProxyInstance(
             Thread.currentThread().getContextClassLoader(),
             new Class[]{clientInterface},
-            new RestClient(new HttpClient(), baseUrl, clientInterface));
+            new RestClient(client, baseUrl, clientInterface));
     }
 
     @Override

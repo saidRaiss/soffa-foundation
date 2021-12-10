@@ -2,6 +2,7 @@ package io.soffa.foundation.commons.http;
 
 
 import io.soffa.foundation.commons.JsonUtil;
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.Regex;
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.context.RequestContextHolder;
@@ -24,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 public final class HttpUtil {
 
     private static final List<Interceptor> INTERCEPTORS = new ArrayList<>();
+    private static final Logger LOG = Logger.get(HttpUtil.class);
 
     private HttpUtil() {
     }
@@ -57,6 +59,7 @@ public final class HttpUtil {
             .followSslRedirects(true);
 
         if (trustAll) {
+            LOG.info("Trust all certificates");
             final TrustManager[] trustAllCerts = {new TrustAllManager()};
             final SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
@@ -66,6 +69,7 @@ public final class HttpUtil {
         }
 
         if (TextUtil.isNotEmpty(proxy)) {
+            LOG.info("Using http proxy: {}", proxy);
             URL parsedUrl = new URL(proxy);
             Proxy p = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(parsedUrl.getHost(), parsedUrl.getPort()));
             String userInfo = parsedUrl.getUserInfo();
@@ -85,7 +89,7 @@ public final class HttpUtil {
         builder.addNetworkInterceptor(chain -> {
             Request originalRequest = chain.request();
             String contentType = originalRequest.header("Content-Type");
-            if (TextUtil.isEmpty(contentType) || contentType.contains("application/json")) {
+            if (contentType==null || TextUtil.isEmpty(contentType) || contentType.contains("application/json")) {
                 contentType = "application/json"; // Because OkHttp adds ;charset-utf8
             }
             Request.Builder request = originalRequest.newBuilder().header("Content-Type", contentType);

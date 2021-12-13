@@ -4,17 +4,21 @@ plugins {
     id("soffa.springboot.library")
 }
 
+
+
+
 dependencies {
     api(project(":soffa-foundation-core"))
     api("org.springframework.boot:spring-boot-starter-web") {
         exclude(module = "spring-boot-starter-tomcat")
     }
     runtimeOnly("org.springframework.boot:spring-boot-starter-undertow")
+    implementation(platform("org.apache.logging.log4j:log4j-bom:2.15.0"))
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     api("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    implementation("net.logstash.logback:logstash-logback-encoder:7.0")
+    implementation("net.logstash.logback:logstash-logback-encoder:7.0.1")
     api("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     api("org.springframework.cloud:spring-cloud-starter-vault-config")

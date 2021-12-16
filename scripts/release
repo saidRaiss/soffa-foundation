@@ -1,4 +1,5 @@
 #!/bin/bash
 
-gradle publishMavenPublicationToSonatypeRepository closeAndReleaseSonatypeStagingRepository
+CI=true
+gradle sign publishMavenPublicationToSonatypeRepository closeAndReleaseSonatypeStagingRepository
 

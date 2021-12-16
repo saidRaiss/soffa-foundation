@@ -1,6 +1,9 @@
 package io.soffa.foundation.data;
 
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
+import io.soffa.foundation.commons.UrlInfo;
+import io.soffa.foundation.commons.UrlUtil;
 import io.soffa.foundation.exceptions.TechnicalException;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +14,6 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.jdbi.v3.core.Jdbi;
 
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import java.util.List;
 @Builder
 public class DataSourceProperties {
 
+    private static final Logger LOG = Logger.get(DataSourceProperties.class);
     public static final String H2_DRIVER = "org.h2.Driver";
     public static final String H2 = "h2";
     public static final String PG = "postgresql";
@@ -67,17 +70,12 @@ public class DataSourceProperties {
 
     @SneakyThrows
     private static JdbcInfo createJdbcUrl(final String provider, final URL url, final String schema) {
-        String username = "";
-        String password = null;
-        String userInfos = url.getUserInfo();
-        if (userInfos != null) {
-            if (userInfos.contains(":")) {
-                String[] userAndPassword = userInfos.trim().split(":");
-                password = URLDecoder.decode(userAndPassword[1], StandardCharsets.UTF_8.toString());
-                username = URLDecoder.decode(userAndPassword[0], StandardCharsets.UTF_8.toString());
-            } else {
-                username = userInfos.trim();
-            }
+        UrlInfo urlInfo = UrlUtil.parse(url);
+        if (TextUtil.isEmpty(urlInfo.getUsername())) {
+            LOG.warn("No username found in database url: %s", url);
+        }
+        if (TextUtil.isEmpty(urlInfo.getPassword())) {
+            LOG.warn("No password found in database url: %s", url);
         }
         StringBuilder jdbcUrl = new StringBuilder();
         String jdbcDriver;
@@ -89,7 +87,7 @@ public class DataSourceProperties {
             jdbcUrl.append(String.format("jdbc:h2:%1$s:%2$s;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE", hostname, path));
             if (TextUtil.isNotEmpty(schema)) {
                 sc = schema.toUpperCase();
-                createSchema(jdbcUrl.toString(), username, password, schema);
+                createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), schema);
                 jdbcUrl.append(";INIT=CREATE SCHEMA IF NOT EXISTS ").append(schema);
             }
         } else {
@@ -102,12 +100,12 @@ public class DataSourceProperties {
             jdbcUrl.append(String.format("jdbc:postgresql://%1$s/%2$s", hostname, path));
             if (TextUtil.isNotEmpty(schema)) {
                 sc = schema.toLowerCase();
-                createSchema(jdbcUrl.toString(), username, password, schema);
+                createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), schema);
                 jdbcUrl.append("?currentSchema=").append(schema);
             }
         }
 
-        return new JdbcInfo(jdbcDriver, jdbcUrl.toString(), username, password, sc);
+        return new JdbcInfo(jdbcDriver, jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), sc);
     }
 
     private static void createSchema(String jdbcUrl, String username, String password, String schema) {

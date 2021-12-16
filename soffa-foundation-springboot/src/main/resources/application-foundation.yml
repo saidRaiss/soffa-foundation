@@ -69,7 +69,7 @@ spring.cloud.consul:
     healthCheckInterval: 15s
     instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
 
-#spring.autoconfigure.exclude: org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
+spring.autoconfigure.exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
 management.endpoint.health.group.liveness.include: livenessstate,cacheCheck
 management.endpoint.health.probes.enabled: true
 
@@ -79,6 +79,7 @@ spring.cloud.vault:
 
 app.db.migrations: classpath:db/changelog/${spring.application.name}.xml
 app.db.table-prefix:
+
 app.amqp:
   enabled: false
   exchange: app

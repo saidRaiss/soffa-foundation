@@ -10,8 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @ComponentScan({"io.soffa.foundation"})
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE - 10)
-//@EntityScan(basePackages = "io.soffa.foundation.spring.data")
-//@EnableJpaRepositories(basePackages = "io.soffa.foundation.spring.data")
 public class FoundationAutoConfiguration {
 
 }

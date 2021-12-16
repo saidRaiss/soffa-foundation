@@ -2,6 +2,7 @@ package io.soffa.foundation;
 
 import io.soffa.foundation.config.TestPubSubListener;
 import io.soffa.foundation.events.Event;
+import io.soffa.foundation.exceptions.TechnicalException;
 import io.soffa.foundation.pubsub.PubSubClient;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
@@ -12,8 +13,11 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
 @ActiveProfiles("test")
+@SpringBootTest(properties = {
+    "app.amqp.enabled=true",
+    "app.amqp.clients.t1=amqp://guest:guest@localhost:5672",
+})
 public class RabbitMQTest {
 
     @Autowired
@@ -27,6 +31,11 @@ public class RabbitMQTest {
         pubSubClient.sendInternal(new Event("HELLO1"));
         Thread.sleep(1000 * 2);
         assertEquals(1, TestPubSubListener.TICK.intValue());
+
+        Assertions.assertThrowsExactly(TechnicalException.class, () -> {
+            pubSubClient.send("t1", "exchange1", "routing1", new Event("HELLO2"));
+        });
+
     }
 
 }

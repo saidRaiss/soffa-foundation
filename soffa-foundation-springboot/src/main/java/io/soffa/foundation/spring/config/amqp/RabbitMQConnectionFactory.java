@@ -1,0 +1,21 @@
+package io.soffa.foundation.spring.config.amqp;
+
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
+@Configuration
+@ConditionalOnProperty(value = "app.amqp.enabled", havingValue = "true")
+@Import(RabbitAutoConfiguration.class)
+public class RabbitMQConnectionFactory {
+
+    @Bean
+    @ConfigurationProperties(prefix = "app.amqp")
+    public RabbitMQProperties properties() {
+        return new RabbitMQProperties();
+    }
+
+}

@@ -4,14 +4,14 @@ plugins {
 
 buildscript {
     repositories {
-        // mavenLocal()
+        mavenLocal()
         mavenCentral()
         maven {
             setUrl("https://plugins.gradle.org/m2/")
         }
     }
     dependencies {
-        classpath("io.soffa.gradle:soffa-gradle-plugin:2.1.9")
+        classpath("io.soffa.gradle:soffa-gradle-plugin:2.1.10")
     }
 }
 

@@ -8,6 +8,7 @@ import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.events.Event;
 import io.soffa.foundation.exceptions.TechnicalException;
 import io.soffa.foundation.pubsub.PubSubClient;
+import io.soffa.foundation.spring.config.amqp.model.RabbitMQProperties;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -90,6 +91,7 @@ public class RabbitMQConfig {
     @Bean
     PubSubClient createPubSubClient(RabbitMQProperties rabbitMQProperties) {
 
+        LOG.info("Creating PubSubClient");
         RabbitMQClientPool clients = new RabbitMQClientPool(rabbitMQProperties);
 
         return new PubSubClient() {
@@ -115,7 +117,7 @@ public class RabbitMQConfig {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("[PUB-SUB] Message sent to %s - @action:%s", routingKey, event.getAction());
                     }
-                }catch (AmqpException e) {
+                } catch (AmqpException e) {
                     throw new TechnicalException(e, "Error sending amqp message to client:%s @exchange:%s routing:%s action:%s", clientId, exchange, routingKey, event.getAction());
                 }
             }

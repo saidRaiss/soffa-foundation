@@ -11,10 +11,14 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
 @ActiveProfiles("test")
+@SpringBootTest(properties = {
+    "app.amqp.enabled=true",
+    "app.amqp.clients.default=amqp://guest:guest@localhost:5672",
+})
 public class RabbitMQTest {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private PubSubClient pubSubClient;
 

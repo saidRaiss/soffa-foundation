@@ -1,4 +1,4 @@
-package io.soffa.foundation.spring.config.amqp;
+package io.soffa.foundation.spring.config.amqp.model;
 
 import lombok.Data;
 

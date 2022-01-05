@@ -1,11 +1,11 @@
 package io.soffa.foundation.spring.data;
 
 import io.soffa.foundation.commons.TextUtil;
+import org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy;
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.engine.jdbc.env.spi.JdbcEnvironment;
-import org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy;
 
-public class CustomPhysicalNamingStrategy extends SpringPhysicalNamingStrategy {
+public class CustomPhysicalNamingStrategy extends CamelCaseToUnderscoresNamingStrategy {
 
     public static String tablePrefix;
 

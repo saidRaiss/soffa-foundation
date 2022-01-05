@@ -6,6 +6,5 @@ app.db.links:
   T1: h2://mem/t1_${random.int}
   T2: h2://mem/t2_${random.int}
 
-
 spring.config.import:
   - classpath:application-foundation.yml

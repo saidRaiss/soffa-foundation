@@ -10,11 +10,13 @@ import lombok.SneakyThrows;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 import java.nio.charset.StandardCharsets;
 
 @Configuration
+@ConditionalOnProperty(value = "app.amqp.enabled", havingValue = "true")
 public class PubSubListenerConfig {
 
     private static final Logger LOG = Logger.get(PubSubListenerConfig.class);

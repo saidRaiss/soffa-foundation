@@ -4,6 +4,7 @@ import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.commons.UrlInfo;
 import io.soffa.foundation.commons.UrlUtil;
 import io.soffa.foundation.exceptions.TechnicalException;
+import io.soffa.foundation.spring.config.amqp.model.RabbitMQProperties;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 

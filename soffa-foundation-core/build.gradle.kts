@@ -22,15 +22,17 @@ dependencies {
     api("com.amazonaws:aws-java-sdk-s3:1.12.131")
     implementation("com.auth0:java-jwt:3.18.2")
     api("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final")
-    api("org.jobrunr:jobrunr:4.0.5") {
+    compileOnly("org.jobrunr:jobrunr:4.0.5") {
         exclude(group = "com.zaxxer")
     }
     api("org.jdbi:jdbi3-core:3.25.0") {
         exclude(group = "com.github.ben-manes.caffeine")
     }
-    api("com.github.ben-manes.caffeine:caffeine:2.9.3")
+    @Suppress("GradlePackageUpdate")
+    api("com.github.ben-manes.caffeine:caffeine:2.9.3") // Don't use version 3, it's not compatible with Java8
     api("org.liquibase:liquibase-core:4.6.2")
-    api("com.h2database:h2:2.0.204")
+    @Suppress("GradlePackageUpdate")
+    api("com.h2database:h2:1.4.200") // warning: version 2.x add KEY and VALUE as reserved words
     @Suppress("GradlePackageUpdate")
     api("commons-beanutils:commons-beanutils:1.9.4")
     implementation("org.apache.commons:commons-email:1.5")

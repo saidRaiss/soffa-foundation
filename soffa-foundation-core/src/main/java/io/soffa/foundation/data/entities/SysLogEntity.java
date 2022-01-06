@@ -20,12 +20,12 @@ public class SysLogEntity {
     private String kind;
     private String event;
     private String data;
+    @Column(name = "value_num")
     private Float value;
     private String requestId;
     private String spanId;
     private String traceId;
-    @Column(name = "user_id")
-    private String user;
+    private String userId;
     private String application;
     private long duration;
     private String error;

@@ -1,6 +1,7 @@
 package io.soffa.foundation.actions;
 
 import io.soffa.foundation.commons.ErrorUtil;
+import io.soffa.foundation.commons.ExecutorHelper;
 import io.soffa.foundation.commons.JsonUtil;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.context.RequestContextHolder;
@@ -139,33 +140,31 @@ public class DefaultActionDispatcher implements ActionDispatcher {
 
             if (sysLogs != null) {
 
-                if (TenantHolder.isEmpty()) {
-                    LOG.warn("No tenant found in current context, skipping syslog persist.");
-                } else {
-
-                    Instant finish = Instant.now();
-                    Duration timeElapsed = Duration.between(start, finish);
-                    if (timeElapsed.getSeconds() >= SLOW_ACTION_THRESHOLD) {
-                        LOG.warn("action %s tooks more than %ds", action, timeElapsed.getSeconds());
-                    }
-
-                    TenantHolder.submit(() -> {
-                        SysLog log = new SysLog();
-                        log.setKind("action");
-                        log.setEvent(action);
-                        if (data != null) {
-                            log.setData(JsonUtil.serialize(data));
-                        }
-                        log.setContext(context);
-                        log.setError(error.get());
-                        log.setDuration(timeElapsed.toMillis());
-                        try {
-                            sysLogs.save(log);
-                        } catch (Exception e) {
-                            LOG.error(e, "failed to save sys log event: %s", e.getMessage());
-                        }
-                    });
+                Instant finish = Instant.now();
+                Duration timeElapsed = Duration.between(start, finish);
+                if (timeElapsed.getSeconds() >= SLOW_ACTION_THRESHOLD) {
+                    LOG.warn("action %s tooks more than %ds", action, timeElapsed.getSeconds());
                 }
+
+                final String tenantId = TenantHolder.get().orElse(null);
+
+                ExecutorHelper.execute(() -> {
+                    TenantHolder.set(tenantId);
+                    SysLog log = new SysLog();
+                    log.setKind("action");
+                    log.setEvent(action);
+                    if (data != null) {
+                        log.setData(JsonUtil.serialize(data));
+                    }
+                    log.setContext(context);
+                    log.setError(error.get());
+                    log.setDuration(timeElapsed.toMillis());
+                    try {
+                        sysLogs.save(log);
+                    } catch (Exception e) {
+                        LOG.error(e, "failed to save sys log event: %s", e.getMessage());
+                    }
+                });
             }
         }
     }

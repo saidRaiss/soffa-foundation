@@ -1,6 +1,7 @@
 package io.soffa.foundation.app;
 
 import io.soffa.foundation.context.TenantHolder;
+import io.soffa.foundation.core.model.TenantId;
 import io.soffa.foundation.data.SysLogRepository;
 import io.soffa.foundation.events.Event;
 import io.soffa.foundation.spring.config.jobs.Job;
@@ -27,14 +28,16 @@ public class JobRunnerTest {
     @SneakyThrows
     @Test
     public void testJobRunner() {
-        TenantHolder.set("T1");
         assertNotNull(jobs);
-        long initialCount = sysLogs.count();
-        Job job = jobs.enqueue("testPing", new Event("PingAction").withTenant("T1"));
-        jobs.run(job);
-        TestUtil.awaitUntil(5, () -> {
-            long count = sysLogs.count();
-            return count >= initialCount + 1;
+        TenantHolder.submit(TenantId.of("T1"), (tenantId) -> {
+            long initialCount = sysLogs.count();
+            Job job = jobs.enqueue("testPing", new Event("PingAction").withTenant(tenantId));
+            jobs.run(job);
+            TestUtil.awaitUntil(5, () -> {
+                TenantHolder.set(tenantId);
+                long count = sysLogs.count();
+                return count >= initialCount + 1;
+            });
         });
     }
 

@@ -3,6 +3,7 @@ package io.soffa.foundation;
 import com.google.common.collect.ImmutableMap;
 import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.context.TenantHolder;
+import io.soffa.foundation.core.model.TenantId;
 import io.soffa.foundation.data.SysLog;
 import io.soffa.foundation.data.SysLogRepository;
 import lombok.SneakyThrows;
@@ -53,7 +54,7 @@ public class DataSourceTest {
             assertEquals(0, sysLogs.count());
 
             for (int i = 0; i < e.getValue(); i++) {
-                TenantHolder.execute(tenant, () -> {
+                TenantHolder.submit(TenantId.of(tenant), () -> {
                     sysLogs.save(new SysLog("event", IdGenerator.shortUUID()));
                     latch.countDown();
                 });
@@ -62,7 +63,8 @@ public class DataSourceTest {
 
         latch.await(5, TimeUnit.SECONDS);
 
-        for (final Map.Entry<String, Integer> e : links.entrySet()) {
+        for (
+            final Map.Entry<String, Integer> e : links.entrySet()) {
             TenantHolder.set(e.getKey());
             assertEquals(e.getValue(), (int) sysLogs.count());
         }

@@ -9,14 +9,12 @@ import lombok.SneakyThrows;
 
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public final class TenantHolder {
 
     private static final ThreadLocal<String> CURRENT = new InheritableThreadLocal<>();
-    private static final ExecutorService SC = Executors.newFixedThreadPool(16);
     public static boolean hasDefault;
 
 
@@ -24,8 +22,8 @@ public final class TenantHolder {
     }
 
     public static void set(TenantId tenantId) {
-        Logger.setTenantId(tenantId);
         Preconditions.checkNotNull(tenantId, "Tenant cannot be empty");
+        Logger.setTenantId(tenantId);
         set(tenantId.getValue());
     }
 
@@ -64,47 +62,6 @@ public final class TenantHolder {
         return CURRENT.get();
     }
 
-    public static void submit(Runnable runnable) {
-        submit(require(), runnable);
-    }
-
-    public static void submit(final String tenantId, Runnable runnable) {
-        SC.submit(() -> {
-            TenantHolder.set(tenantId);
-            runnable.run();
-        });
-    }
-
-    public static void execute(Runnable runnable) {
-        execute(require(), runnable);
-    }
-
-    public static void execute(final String tenantId, Runnable runnable) {
-        SC.execute(() -> {
-            TenantHolder.set(tenantId);
-            runnable.run();
-        });
-    }
-
-    @SneakyThrows
-    public static void run(final String tenantId, Runnable runnable) {
-        run(new TenantId(tenantId), runnable);
-    }
-
-    @SneakyThrows
-    public static void run(final TenantId tenantId, Runnable runnable) {
-        CountDownLatch latch = new CountDownLatch(1);
-        SC.submit(() -> {
-            TenantHolder.set(tenantId);
-            try {
-                runnable.run();
-            } finally {
-                latch.countDown();
-            }
-        });
-        latch.await();
-    }
-
     @SneakyThrows
     public static void use(final TenantId tenantId, Runnable runnable) {
         if (tenantId == null) {
@@ -120,6 +77,7 @@ public final class TenantHolder {
         }
     }
 
+
     @SneakyThrows
     public static <O> O use(final TenantId tenantId, Supplier<O> supplier) {
         if (tenantId == null) {
@@ -133,5 +91,50 @@ public final class TenantHolder {
                 set(current);
             }
         }
+    }
+
+    @SneakyThrows
+    public static void use(final String tenantId, Consumer<TenantId> consumer) {
+        use(TenantId.of(tenantId), consumer);
+    }
+
+    public static void use(final TenantId tenantId, Consumer<TenantId> consumer) {
+        set(tenantId);
+        consumer.accept(tenantId);
+    }
+
+    @SneakyThrows
+    public static void submit(final String tenantId, Consumer<TenantId> consumer) {
+        submit(TenantId.of(tenantId), consumer);
+    }
+
+    @SneakyThrows
+    public static void submit(final TenantId tenantId, Runnable runnable) {
+        CountDownLatch latch = new CountDownLatch(1);
+        new Thread(() -> {
+            try {
+                set(tenantId);
+                runnable.run();
+            } finally {
+                latch.countDown();
+
+            }
+        }).start();
+        latch.await();
+    }
+
+    @SneakyThrows
+    public static void submit(final TenantId tenantId, Consumer<TenantId> consumer) {
+        CountDownLatch latch = new CountDownLatch(1);
+        new Thread(() -> {
+            try {
+                set(tenantId);
+                consumer.accept(tenantId);
+            } finally {
+                latch.countDown();
+
+            }
+        }).start();
+        latch.await();
     }
 }

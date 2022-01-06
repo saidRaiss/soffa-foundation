@@ -26,20 +26,28 @@ public class SysLogTests {
 
     @Test
     public void testSysAction() {
-        TenantHolder.set("T1");
-        HttpExpect test = new HttpExpect(mvc);
+        TenantHolder.submit("T1", (tenantId) -> {
+            HttpExpect test = new HttpExpect(mvc);
 
-        long initialCount = sysLogs.count();
-        test.get("/ping").withTenant("T1").expect().isOK().json("$.value", "PONG");
+            long initialCount = sysLogs.count();
+            test.get("/ping").withTenant(tenantId.getValue()).expect().isOK().json("$.value", "PONG");
 
-        TestUtil.awaitUntil(3, () -> initialCount + 1 == sysLogs.count());
+            TestUtil.awaitUntil(3, () -> {
+                TenantHolder.set(tenantId);
+                return initialCount + 1 == sysLogs.count();
+            });
 
-        test.get("/ping").
-            withTenant("T1").
-            header(ApiHeaders.APPLICATION, "Demo").
-            expect().isOK().json("$.value", "PONG");
+            test.get("/ping").
+                withTenant(tenantId.getValue()).
+                header(ApiHeaders.APPLICATION, "Demo").
+                expect().isOK().json("$.value", "PONG");
 
-        TestUtil.awaitUntil(3, () -> initialCount + 2 == sysLogs.count());
+            TestUtil.awaitUntil(3, () -> {
+                TenantHolder.set(tenantId);
+                return initialCount + 2 == sysLogs.count();
+            });
+        });
+
     }
 
 

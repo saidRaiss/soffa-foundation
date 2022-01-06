@@ -49,6 +49,7 @@ public class HttpRequest {
         return header("X-TenantId", tenantId);
     }
 
+
     public HttpRequest withTrace(String spanId, String traceId) {
         header("X-SpanId", spanId);
         header("X-TraceId", traceId);

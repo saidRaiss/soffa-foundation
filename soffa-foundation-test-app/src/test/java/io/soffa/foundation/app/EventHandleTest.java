@@ -37,7 +37,7 @@ public class EventHandleTest {
         AtomicLong t1InitialCount = new AtomicLong();
 
         String actionName = "PingAction";
-        TenantHolder.run(t1, () -> {
+        TenantHolder.submit(t1, () -> {
             t1InitialCount.set(sysLogs.count());
             dispatcher.handle(new Event(actionName)); // automatic tenant
             dispatcher.handle(new Event("EchoAction", "Hello"));
@@ -46,18 +46,18 @@ public class EventHandleTest {
 
         AtomicLong t2InitialCount = new AtomicLong();
 
-        TenantHolder.run(t2, () -> {
+        TenantHolder.submit(t2, () -> {
             t2InitialCount.set(sysLogs.count());
             Assertions.assertThrows(FakeException.class, () -> {
                 dispatcher.handle(new Event(actionName));
             });
         });
 
-        TenantHolder.run(t1, () -> {
+        TenantHolder.submit(t1, () -> {
             assertEquals(t1InitialCount.get() + 3, sysLogs.count());
         });
 
-        TenantHolder.run(t2, () -> {
+        TenantHolder.submit(t2, () -> {
             assertEquals(t2InitialCount.get() + 1, sysLogs.count());
         });
     }

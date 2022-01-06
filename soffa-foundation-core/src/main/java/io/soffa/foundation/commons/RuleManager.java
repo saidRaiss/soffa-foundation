@@ -1,14 +1,18 @@
 package io.soffa.foundation.commons;
 
 import io.soffa.foundation.exceptions.FunctionalException;
+
 import java.util.function.Supplier;
 
-public class Rules {
+public class RuleManager {
 
-    private Rules() {
+    private static final RuleManager INSTANCE = new RuleManager();
+
+    public static RuleManager getInstance() {
+        return INSTANCE;
     }
 
-    public static void check(String message, Supplier<Boolean> supplier) {
+    public void check(String message, Supplier<Boolean> supplier) {
         if (!supplier.get()) {
             throw new FunctionalException(message);
         }

@@ -87,7 +87,7 @@ public class DataSourceProperties {
             jdbcUrl.append(String.format("jdbc:h2:%1$s:%2$s;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE", hostname, path));
             if (TextUtil.isNotEmpty(schema)) {
                 sc = schema.toUpperCase();
-                //createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), sc);
+                createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), sc);
                 jdbcUrl.append(";INIT=CREATE SCHEMA IF NOT EXISTS ").append(sc);
             }
         } else {

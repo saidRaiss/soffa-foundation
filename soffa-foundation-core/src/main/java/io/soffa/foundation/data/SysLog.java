@@ -19,7 +19,7 @@ public class SysLog {
     private String requestId;
     private String spanId;
     private String traceId;
-    private String user;
+    private String userId;
     private String application;
     private String error;
     private String errorDetails;
@@ -35,7 +35,7 @@ public class SysLog {
         if (context != null) {
             setSpanId(context.getSpanId());
             setTraceId(context.getTraceId());
-            setUser(context.getUsername().orElse("guest"));
+            setUserId(context.getUsername().orElse("guest"));
             setApplication(context.getApplicationName());
         }
     }

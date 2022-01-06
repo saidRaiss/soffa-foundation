@@ -7,7 +7,8 @@ import lombok.Value;
 @Value
 public class TenantId {
 
-    public static final String DEFAULT = "default";
+    public static final String DEFAULT_VALUE = "default";
+    public static final TenantId DEFAULT = new TenantId(DEFAULT_VALUE);
 
     @JsonValue
     String value;

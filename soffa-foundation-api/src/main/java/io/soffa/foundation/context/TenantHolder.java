@@ -57,7 +57,7 @@ public final class TenantHolder {
     public static String require() {
         if (CURRENT.get() == null) {
             if (hasDefault) {
-                return TenantId.DEFAULT;
+                return TenantId.DEFAULT_VALUE;
             }
             throw new FunctionalException("MISSING_TENANT");
         }

@@ -30,7 +30,7 @@ public class SysLogEntity {
     private long duration;
     private String error;
     private String errorDetails;
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     @SneakyThrows

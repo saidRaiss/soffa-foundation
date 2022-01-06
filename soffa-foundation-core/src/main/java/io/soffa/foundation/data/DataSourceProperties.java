@@ -87,8 +87,8 @@ public class DataSourceProperties {
             jdbcUrl.append(String.format("jdbc:h2:%1$s:%2$s;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE", hostname, path));
             if (TextUtil.isNotEmpty(schema)) {
                 sc = schema.toUpperCase();
-                createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), schema);
-                jdbcUrl.append(";INIT=CREATE SCHEMA IF NOT EXISTS ").append(schema);
+                //createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), sc);
+                jdbcUrl.append(";INIT=CREATE SCHEMA IF NOT EXISTS ").append(sc);
             }
         } else {
             jdbcDriver = "org.postgresql.Driver";
@@ -110,7 +110,12 @@ public class DataSourceProperties {
 
     private static void createSchema(String jdbcUrl, String username, String password, String schema) {
         // Automatic schema creation if possible
-        Jdbi jdbi = Jdbi.create(jdbcUrl, username, password);
+        Jdbi jdbi;
+        if (username != null) {
+            jdbi = Jdbi.create(jdbcUrl, username, password);
+        }else {
+            jdbi = Jdbi.create(jdbcUrl);
+        }
         jdbi.inTransaction(handle -> {
             handle.execute("CREATE SCHEMA IF NOT EXISTS " + schema);
             return null;

@@ -157,7 +157,7 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         String schema = ds.getSchema();
         String dsName = ds.getPoolName().split("__")[0];
         if (TenantId.DEFAULT.equals(dsName)) {
-            lqb.setContexts(TenantId.DEFAULT);
+            lqb.setContexts(TenantId.DEFAULT_VALUE);
         } else {
             lqb.setContexts("tenant," + dsName.toLowerCase());
         }

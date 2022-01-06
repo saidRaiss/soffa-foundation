@@ -87,11 +87,9 @@ public class DataSourceProperties {
         String sc = schema;
         if (H2.equals(provider)) {
             jdbcDriver = H2_DRIVER;
-            jdbcUrl.append(String.format("jdbc:h2:%1$s:%2$s;MODE=PostgreSQL;DATABASE_TO_UPPER=false;DB_CLOSE_ON_EXIT=FALSE", hostname, path));
+            jdbcUrl.append(String.format("jdbc:h2:%1$s:%2$s;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE", hostname, path));
             if (TextUtil.isNotEmpty(schema)) {
                 sc = schema.toUpperCase();
-                createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), schema);
-                createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), schema.toUpperCase());
                 jdbcUrl.append(";INIT=CREATE SCHEMA IF NOT EXISTS ").append(sc);
             }
         } else {

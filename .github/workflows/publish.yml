@@ -1,4 +1,4 @@
-name: pipeline-master
+name: release
 
 on:
   push:

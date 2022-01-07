@@ -1,8 +1,8 @@
-name: pipeline-master
+name: build
 
 on:
   push:
-    branches-ignore: [ master ]
+    branches-ignore: [ master,main ]
 
 env:
   SONATYPE_USERNAME: ${{ secrets.OSSRH_USERNAME }}

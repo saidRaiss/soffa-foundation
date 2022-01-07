@@ -1,7 +1,6 @@
 package io.soffa.foundation.spring.config;
 
 import io.soffa.foundation.commons.Logger;
-import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.data.DbConfig;
 import io.soffa.foundation.data.DbMigration;
 import io.soffa.foundation.spring.data.MockDataSource;

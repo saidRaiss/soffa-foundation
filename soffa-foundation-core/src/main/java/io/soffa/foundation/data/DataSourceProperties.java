@@ -57,7 +57,7 @@ public class DataSourceProperties {
             }
         }
 
-        JdbcInfo jdbcInfo = createJdbcUrl(provider, url, schema);
+        JdbcInfo jdbcInfo = createJdbcUrl(provider, url, schema, databaseUrl);
         if (schema!=null && jdbcInfo.getUrl().startsWith("jdbc:h2")) {
             schema = schema.toUpperCase();
         }
@@ -72,13 +72,12 @@ public class DataSourceProperties {
     }
 
     @SneakyThrows
-    private static JdbcInfo createJdbcUrl(final String provider, final URL url, final String schema) {
+    private static JdbcInfo createJdbcUrl( String provider,  URL url,  String schema, String initialUrl) {
         UrlInfo urlInfo = UrlUtil.parse(url);
         if (TextUtil.isEmpty(urlInfo.getUsername())) {
-            LOG.warn("No username found in database url: %s", url);
-        }
-        if (TextUtil.isEmpty(urlInfo.getPassword())) {
-            LOG.warn("No password found in database url: %s", url);
+            LOG.warn("No username found in database url: %s", initialUrl);
+        }else if (TextUtil.isEmpty(urlInfo.getPassword())) {
+            LOG.warn("No password found in database url: %s", initialUrl);
         }
         StringBuilder jdbcUrl = new StringBuilder();
         String jdbcDriver;

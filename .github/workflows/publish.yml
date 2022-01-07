@@ -2,7 +2,7 @@ name: pipeline-master
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master,main ]
 
 env:
   SONATYPE_USERNAME: ${{ secrets.OSSRH_USERNAME }}

@@ -31,8 +31,8 @@ public class DatasourceConfig {
             return new MockDataSource();
         }
 
-        String tablePrefix = TextUtil.trimToEmpty(dbConfig.getTablePrefix()).replaceAll("[^a-zA-Z0-9]", "_");
-        TenantAwareDatasource ds = new TenantAwareDatasource(dbConfig.getLinks(), tablePrefix, applicationName);
+
+        TenantAwareDatasource ds = new TenantAwareDatasource(dbConfig.getLinks(), dbConfig.getTablePrefix(), applicationName);
         if (dbConfig.isAutoMigrate()) {
             ds.applyMigrations(migrationSource);
         } else {

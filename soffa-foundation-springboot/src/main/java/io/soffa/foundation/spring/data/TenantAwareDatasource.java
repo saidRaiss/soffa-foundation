@@ -35,7 +35,7 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
     private static final Logger LOG = Logger.get(TenantAwareDatasource.class);
     private final Map<String, Object> dataSources = new ConcurrentHashMap<>();
     private final ResourceLoader resourceLoader = new DefaultResourceLoader();
-    private final String tablesPrefix;
+    private String tablesPrefix;
     private final String appicationName;
     private boolean appicationStarted;
 
@@ -45,7 +45,18 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
                                  final String appicationName) {
 
         super();
-        this.tablesPrefix = tablesPrefix;
+
+
+        if (TextUtil.isNotEmpty(tablesPrefix)) {
+            this.tablesPrefix= TextUtil.trimToEmpty(tablesPrefix)
+                .replaceAll("[^a-zA-Z0-9]", "_")
+                .replaceAll("_+$", "_");
+
+            if (! this.tablesPrefix.endsWith("_")) {
+                this.tablesPrefix += "_";
+            }
+        }
+
         this.appicationName = appicationName;
         setLenientFallback(false);
         CustomPhysicalNamingStrategy.tablePrefix = tablesPrefix;
@@ -142,11 +153,11 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         changeLogParams.put("tablePrefix", "");
 
         if (TextUtil.isNotEmpty(tablesPrefix)) {
-            changeLogParams.put("table_prefix", tablesPrefix + "_");
-            changeLogParams.put("tablePrefix", tablesPrefix + "_");
+            changeLogParams.put("table_prefix", tablesPrefix);
+            changeLogParams.put("tablePrefix", tablesPrefix);
 
-            lqb.setDatabaseChangeLogLockTable(tablesPrefix + "_changelog_lock");
-            lqb.setDatabaseChangeLogTable(tablesPrefix + "_changelog");
+            lqb.setDatabaseChangeLogLockTable(tablesPrefix + "changelog_lock");
+            lqb.setDatabaseChangeLogTable(tablesPrefix + "changelog");
         }
         if (TextUtil.isNotEmpty(appicationName)) {
             changeLogParams.put("application", appicationName);

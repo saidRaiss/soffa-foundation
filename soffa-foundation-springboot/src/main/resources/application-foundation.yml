@@ -19,23 +19,25 @@ server:
   compression.enabled: true
   forward-headers-strategy: framework
 
-spring.rabbitmq:
-  listener.simple.retry:
-    enabled: true
-    initial-interval: 2s
-    max-attempts: 30
-    max-interval: 300s
-    multiplier: 2
-  addresses: ${app.amqp.addresses:embedded}
-  username: ${app.amqp.username:guest}
-  password: ${app.amqp.password:guest}
-  virtual-host: ${app.amqp.vhost:/}
-  ssl.enabled: ${app.amqp.ssl.enabled:false}
-  ssl.algorithm: ${app.amqp.ssl.algorithm:TLSv1.2}
-  ssl.key-store: ${app.amqp.ssl.key-store:}
-  ssl.key-store-password: ${app.amqp.ssl.key-store-password:}
-  ssl.trust-store: ${app.amqp.ssl.trust-store:}
-  ssl.trust-store-password: ${app.amqp.ssl.trust-store-password:}
+#spring.rabbitmq:
+#  listener.simple.retry:
+#    enabled: true
+#    initial-interval: 2s
+#    max-attempts: 30
+#    max-interval: 300s
+#    multiplier: 2
+#  addresses: ${app.amqp.addresses:}
+#  username: ${app.amqp.username:}
+#  password: ${app.amqp.password:}
+#  virtual-host: ${app.amqp.vhost:/}
+#  ssl.enabled: ${app.amqp.ssl.enabled:false}
+#  ssl.algorithm: ${app.amqp.ssl.algorithm:TLSv1.2}
+#  ssl.key-store: ${app.amqp.ssl.key-store:}
+#  ssl.key-store-password: ${app.amqp.ssl.key-store-password:}
+#  ssl.trust-store: ${app.amqp.ssl.trust-store:}
+#  ssl.trust-store-password: ${app.amqp.ssl.trust-store-password:}
+
+app.amqp.enabled: false
 
 management:
   endpoints.web.exposure.include: "info,health"
@@ -81,14 +83,10 @@ spring.cloud.vault:
 app.db.migrations: classpath:db/changelog/${spring.application.name}.xml
 app.db.table-prefix:
 
-app.amqp:
-  enabled: false
-  exchange: app
-  routing: services
-
 app.redoc.enabled: true
 
 spring.jpa:
+  defer-datasource-initialization: true
   open-in-view: false
   show-sql: false
   properties.hibernate:
@@ -130,9 +128,7 @@ spring.cloud.vault:
 spring.config.import:
   - vault://
 
-
 ---
-
 spring.config.activate.on-profile: prod | production | prd | staging | logstash | json-logs
 logging.config: classpath:logback-spring-json.xml
 

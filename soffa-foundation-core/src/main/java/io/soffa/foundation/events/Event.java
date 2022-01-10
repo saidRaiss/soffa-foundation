@@ -27,9 +27,9 @@ public class Event implements Serializable {
 
     public Event() {
         this.id = IdGenerator.secureRandomId("evt_");
-        context = RequestContextHolder.get().orElse(new RequestContext());
-        if (!context.hasTenant() && !TenantHolder.isEmpty()) {
-            context.setTenantId(new TenantId(TenantHolder.require()));
+        context = JsonUtil.clone(RequestContextHolder.get().orElse(new RequestContext()));
+        if (TenantHolder.isNotEmpty()) {
+            context.setTenantId(TenantId.of(TenantHolder.require()));
         }
     }
 
@@ -46,7 +46,7 @@ public class Event implements Serializable {
     public Event(String action, Object payload, RequestContext context) {
         this.action = action;
         this.payload = payload;
-        this.context = context;
+        this.context = JsonUtil.clone(context);
     }
 
     public TenantId getTenantId() {
@@ -88,7 +88,7 @@ public class Event implements Serializable {
     }
 
     public Event withContext(RequestContext context) {
-        this.context = context;
+        this.context = JsonUtil.clone(context);
         return this;
     }
 }

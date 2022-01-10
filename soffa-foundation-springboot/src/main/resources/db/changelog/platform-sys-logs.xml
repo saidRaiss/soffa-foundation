@@ -7,7 +7,7 @@
     logicalFilePath="platform/logs">
 
     <changeSet id="20229106_ResetApplicationLogs" author="gahissy.titus">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <tableExists tableName="${table_prefix}sys_logs" />
         </preConditions>
         <dropTable tableName="${table_prefix}sys_logs" />

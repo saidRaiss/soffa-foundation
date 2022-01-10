@@ -1,6 +1,7 @@
 package io.soffa.foundation.commons;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.soffa.foundation.core.RequestContext;
 import lombok.SneakyThrows;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,4 +97,7 @@ public final class JsonUtil {
     }
 
 
+    public static RequestContext clone(RequestContext context) {
+        return JsonUtil.deserialize(JsonUtil.serialize(context), RequestContext.class);
+    }
 }

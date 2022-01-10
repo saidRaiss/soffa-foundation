@@ -1,6 +1,7 @@
 package io.soffa.foundation.app;
 
 import io.soffa.foundation.events.Event;
+import io.soffa.foundation.events.EventDispatcher;
 import io.soffa.foundation.pubsub.PubSubClient;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
@@ -11,20 +12,24 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "foundation-amqp"})
 @SpringBootTest(properties = {
-    "app.amqp.enabled=true",
-    "app.amqp.clients.default=amqp://guest:guest@localhost:5672",
+    "app.amqp.addresses=embedded",
+    "app.amqp.clients.default=amqp://guest:guest@localhost:5673",
 })
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 public class RabbitMQTest {
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private PubSubClient pubSubClient;
+
+    @Autowired
+    private EventDispatcher eventDispatcher;
 
     @SneakyThrows
     @Test
     public void testRabbitMQ() {
+        Assertions.assertNotNull(eventDispatcher);
         Assertions.assertNotNull(pubSubClient);
         pubSubClient.sendInternal(new Event("HELLO1"));
         pubSubClient.broadcast(new Event("HELLO2"));

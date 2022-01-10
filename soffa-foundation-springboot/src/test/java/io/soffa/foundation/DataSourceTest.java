@@ -1,9 +1,9 @@
 package io.soffa.foundation;
 
 import com.google.common.collect.ImmutableMap;
+import io.soffa.foundation.commons.ExecutorHelper;
 import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.context.TenantHolder;
-import io.soffa.foundation.core.model.TenantId;
 import io.soffa.foundation.data.SysLog;
 import io.soffa.foundation.data.SysLogRepository;
 import lombok.SneakyThrows;
@@ -19,6 +19,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(properties = {"app.sys-logs.enabled=true"})
 @ActiveProfiles("test")
@@ -27,7 +28,6 @@ public class DataSourceTest {
     @Autowired
     private SysLogRepository sysLogs;
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @SneakyThrows
     @Test
     public void testDataSource() {
@@ -54,14 +54,15 @@ public class DataSourceTest {
             assertEquals(0, sysLogs.count());
 
             for (int i = 0; i < e.getValue(); i++) {
-                TenantHolder.submit(TenantId.of(tenant), () -> {
+                ExecutorHelper.execute(() -> {
+                    TenantHolder.set(tenant);
                     sysLogs.save(new SysLog("event", IdGenerator.shortUUID()));
                     latch.countDown();
                 });
             }
         }
 
-        latch.await(5, TimeUnit.SECONDS);
+        assertTrue(latch.await(5, TimeUnit.SECONDS));
 
         for (
             final Map.Entry<String, Integer> e : links.entrySet()) {

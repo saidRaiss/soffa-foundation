@@ -28,6 +28,8 @@ public class Logger {
     public static void setTenantId(TenantId tenantId) {
         if (tenantId != null) {
             org.slf4j.MDC.put("tenant", tenantId.getValue());
+        }else {
+            org.slf4j.MDC.remove("tenant");
         }
     }
 

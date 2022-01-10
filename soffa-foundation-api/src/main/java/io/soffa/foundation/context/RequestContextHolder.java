@@ -14,24 +14,20 @@ public final class RequestContextHolder {
     }
 
     public static void set(RequestContext value) {
-        synchronized (CURRENT) {
-            if (value == null) {
-                CURRENT.remove();
-            } else {
-                CURRENT.set(value);
-                if (value.getTenantId() != null) {
-                    TenantHolder.set(value.getTenantId());
-                }
-
+        if (value == null) {
+            CURRENT.remove();
+        } else {
+            CURRENT.set(value);
+            if (value.getTenantId() != null) {
+                TenantHolder.set(value.getTenantId());
             }
+
         }
         Logger.setContext(value);
     }
 
     public static void clear() {
-        synchronized (CURRENT) {
-            CURRENT.remove();
-        }
+        CURRENT.remove();
     }
 
     public static boolean isEmpty() {

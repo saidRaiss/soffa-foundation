@@ -1,7 +1,7 @@
 package io.soffa.foundation;
 
 import com.google.common.collect.ImmutableMap;
-import io.soffa.foundation.commons.jwt.DefaultJwtEncoder;
+import io.soffa.foundation.commons.jwt.DefaultJwtProcessor;
 import io.soffa.foundation.commons.jwt.Jwt;
 import io.soffa.foundation.commons.jwt.JwtEncoderConfig;
 import io.soffa.foundation.core.model.Authentication;
@@ -15,7 +15,7 @@ public class JwtEcoderTest {
     @Test
     public void testJwtEncoder() {
         JwtEncoderConfig config = new JwtEncoderConfig("test", "yujRAkZLDBW*Xaw3");
-        DefaultJwtEncoder encoder = new DefaultJwtEncoder(config);
+        DefaultJwtProcessor encoder = new DefaultJwtProcessor(config);
 
         Jwt jwt = encoder.create("Foundation", ImmutableMap.of("email", "foundation@soffa.io"));
         assertNotNull(jwt.getToken());

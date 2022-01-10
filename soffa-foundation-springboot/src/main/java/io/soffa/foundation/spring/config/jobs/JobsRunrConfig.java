@@ -1,7 +1,7 @@
 package io.soffa.foundation.spring.config.jobs;
 
 import io.soffa.foundation.actions.ActionDispatcher;
-import io.soffa.foundation.spring.data.TenantAwareDatasource;
+import io.soffa.foundation.spring.data.TenantAwareDatasourceImpl;
 import org.jobrunr.configuration.JobRunr;
 import org.jobrunr.configuration.JobRunrConfiguration;
 import org.jobrunr.jobs.filters.RetryFilter;
@@ -25,8 +25,8 @@ public class JobsRunrConfig {
                                        ApplicationContext applicationContext,
                                        @Value("${app.sys-jobs.retries:10}") int retries) {
         DataSource target = ds;
-        if (ds instanceof TenantAwareDatasource) {
-            target = ((TenantAwareDatasource) ds).getDefault();
+        if (ds instanceof TenantAwareDatasourceImpl) {
+            target = ((TenantAwareDatasourceImpl) ds).getDefault();
         }
         JobRunrConfiguration.JobRunrConfigurationResult config = JobRunr
             .configure()

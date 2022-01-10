@@ -2,6 +2,7 @@ package io.soffa.foundation.core.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.soffa.foundation.commons.TextUtil;
 import lombok.Value;
 
 @Value
@@ -19,6 +20,9 @@ public class TenantId {
     }
 
     public static TenantId of(String value) {
+        if (TextUtil.isEmpty(value)) {
+            return null;
+        }
         return new TenantId(value);
     }
 

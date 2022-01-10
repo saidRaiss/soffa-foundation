@@ -1,4 +1,4 @@
-package io.soffa.foundation.app;
+package io.soffa.foundation.app.events;
 
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.core.ApiHeaders;
@@ -26,7 +26,7 @@ public class SysLogTests {
 
     @Test
     public void testSysAction() {
-        TenantHolder.submit("T1", (tenantId) -> {
+        TenantHolder.use("T1", (tenantId) -> {
             HttpExpect test = new HttpExpect(mvc);
 
             long initialCount = sysLogs.count();

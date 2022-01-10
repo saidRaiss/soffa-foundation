@@ -8,46 +8,51 @@ import org.springframework.test.web.servlet.ResultActions;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
-public class JsonAssert {
+public class JsonExpect {
 
     private final ResultActions result;
 
-    JsonAssert(ResultActions result) {
+    JsonExpect(ResultActions result) {
         this.result = result;
     }
 
     @SneakyThrows
-    public JsonAssert eq(String path, Object value) {
+    public JsonExpect eq(String path, Object value) {
         result.andExpect(jsonPath(path).value(Matchers.equalTo(value)));
         return this;
     }
 
     @SneakyThrows
-    public JsonAssert isArray(String path) {
+    public JsonExpect isArray(String path) {
         result.andExpect(jsonPath(path).isArray());
         return this;
     }
 
+    /**
+     * Check if object has key <code>path</code>
+     *
+     * @param path key to check
+     */
     @SneakyThrows
-    public JsonAssert exists(String path) {
+    public JsonExpect exists(String path) {
         result.andExpect(jsonPath(path).exists());
         return this;
     }
 
     @SneakyThrows
-    public JsonAssert doesNotExist(String path) {
+    public JsonExpect doesNotExist(String path) {
         result.andExpect(jsonPath(path).doesNotExist());
         return this;
     }
 
     @SneakyThrows
-    public JsonAssert value(String path, Matcher<? super Object> matcher) {
+    public JsonExpect value(String path, Matcher<? super Object> matcher) {
         result.andExpect(jsonPath(path).value(matcher));
         return this;
     }
 
     @SneakyThrows
-    public JsonAssert matches(String path, String regex) {
+    public JsonExpect matches(String path, String regex) {
         result.andExpect(jsonPath(path).value(Matchers.matchesRegex(regex)));
         return this;
     }

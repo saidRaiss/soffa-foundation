@@ -33,9 +33,12 @@ public final class TextUtil {
         return StringUtils.trimToNull(schema);
     }
 
-    public static String format(String pattern, Object... args) {
+    public static String format(final String pattern, Object... args) {
         if (args == null || args.length == 0) {
             return pattern;
+        }
+        if (pattern.contains("{}")) {
+            return String.format(pattern.replaceAll("\\{}", "%s"), args);
         }
         return String.format(pattern, args);
     }

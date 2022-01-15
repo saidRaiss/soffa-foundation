@@ -1,20 +1,23 @@
 package io.soffa.foundation.spring.data;
 
+import com.google.common.collect.ImmutableMap;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.core.model.TenantId;
 import io.soffa.foundation.data.DataSourceProperties;
 import io.soffa.foundation.data.DbMigration;
+import io.soffa.foundation.data.TenantAwareDatasource;
 import io.soffa.foundation.exceptions.DatabaseException;
 import io.soffa.foundation.exceptions.TechnicalException;
 import liquibase.exception.LiquibaseException;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.RandomUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jdbi.v3.core.Jdbi;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -28,23 +31,34 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class TenantAwareDatasource extends AbstractRoutingDataSource implements ApplicationListener<ContextRefreshedEvent> {
+public class TenantAwareDatasourceImpl extends AbstractRoutingDataSource implements ApplicationListener<ContextRefreshedEvent>, TenantAwareDatasource {
 
     public static final String NONE = "NONE";
-    private static final Logger LOG = Logger.get(TenantAwareDatasource.class);
-    private final Map<Object, Object> dataSources = new ConcurrentHashMap<>();
+    private static final Logger LOG = Logger.get(TenantAwareDatasourceImpl.class);
+    private final Map<String, Object> dataSources = new ConcurrentHashMap<>();
     private final ResourceLoader resourceLoader = new DefaultResourceLoader();
-    private final String tablesPrefix;
+    private String tablesPrefix;
     private final String appicationName;
     private boolean appicationStarted;
 
     @SneakyThrows
-    public TenantAwareDatasource(final Map<String, String> links,
-                                 final String tablesPrefix,
-                                 final String appicationName) {
+    public TenantAwareDatasourceImpl(final Map<String, String> links,
+                                     final String tablesPrefix,
+                                     final String appicationName) {
 
         super();
-        this.tablesPrefix = tablesPrefix;
+
+
+        if (TextUtil.isNotEmpty(tablesPrefix)) {
+            this.tablesPrefix = TextUtil.trimToEmpty(tablesPrefix)
+                .replaceAll("[^a-zA-Z0-9]", "_")
+                .replaceAll("_+$", "_");
+
+            if (!this.tablesPrefix.endsWith("_")) {
+                this.tablesPrefix += "_";
+            }
+        }
+
         this.appicationName = appicationName;
         setLenientFallback(false);
         CustomPhysicalNamingStrategy.tablePrefix = tablesPrefix;
@@ -53,8 +67,9 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         }
         links.forEach((name, url) -> dataSources.put(name, createDataSource(DataSourceProperties.create(name, url.trim()))));
         dataSources.put(NONE, new MockDataSource());
-        TenantHolder.hasDefault = dataSources.containsKey(TenantId.DEFAULT);
-        super.setTargetDataSources(dataSources);
+        TenantHolder.hasDefault = dataSources.containsKey(TenantId.DEFAULT_VALUE);
+
+        super.setTargetDataSources(ImmutableMap.copyOf(dataSources));
     }
 
 
@@ -62,8 +77,8 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
     protected Object determineCurrentLookupKey() {
         String linkId = TenantHolder.get().orElse(null);
         if (linkId == null) {
-            if (dataSources.containsKey(TenantId.DEFAULT)) {
-                return TenantId.DEFAULT;
+            if (dataSources.containsKey(TenantId.DEFAULT_VALUE)) {
+                return TenantId.DEFAULT_VALUE;
             } else if (!appicationStarted) {
                 return NONE;
             }
@@ -80,8 +95,8 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         if (hasOneItem) {
             return (DataSource) dataSources.values().iterator().next();
         }
-        if (dataSources.containsKey(TenantId.DEFAULT)) {
-            return (DataSource) dataSources.get(TenantId.DEFAULT);
+        if (dataSources.containsKey(TenantId.DEFAULT_VALUE)) {
+            return (DataSource) dataSources.get(TenantId.DEFAULT_VALUE);
         }
         throw new TechnicalException("No default datasource registered");
     }
@@ -100,17 +115,34 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         hc.setUsername(config.getUsername());
         hc.setPassword(config.getPassword());
         hc.setJdbcUrl(config.getUrl());
-        hc.setPoolName(config.getName() + "__" + RandomUtils.nextInt());
+        hc.setPoolName(IdGenerator.shortUUID(config.getName() + "_"));
         hc.setConnectionTestQuery("select 1");
-        hc.setIdleTimeout(60_000);
-        hc.setMaximumPoolSize(30);
-        hc.setMinimumIdle(3);
+        hc.setIdleTimeout(30_000);
+        hc.setMaximumPoolSize(20);
+        hc.setMinimumIdle(5);
+        hc.setMaxLifetime(2_000_000);
+        hc.setConnectionTimeout(30_000);
         hc.setValidationTimeout(10_000);
         if (config.hasSchema()) {
             hc.setSchema(config.getSchema());
         }
         return new HikariDataSource(hc);
     }
+
+    @Override
+    public void createSchema(String tenantId, String schema) {
+        Jdbi jdbi = Jdbi.create(get(tenantId));
+        jdbi.useHandle(handle -> {
+            handle.execute("CREATE SCHEMA IF NOT EXISTS " + schema);
+        });
+        LOG.info("New schema created: %s", schema);
+    }
+
+    @Override
+    public void applyMigrations(String tenantId, String changeLogPath) {
+        applyMigrations(get(tenantId), changeLogPath);
+    }
+
 
     public void applyMigrations(DbMigration source) {
         for (String changeLogPath : source.getSources()) {
@@ -138,11 +170,11 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         changeLogParams.put("tablePrefix", "");
 
         if (TextUtil.isNotEmpty(tablesPrefix)) {
-            changeLogParams.put("table_prefix", tablesPrefix + "_");
-            changeLogParams.put("tablePrefix", tablesPrefix + "_");
+            changeLogParams.put("table_prefix", tablesPrefix);
+            changeLogParams.put("tablePrefix", tablesPrefix);
 
-            lqb.setDatabaseChangeLogLockTable(tablesPrefix + "_changelog_lock");
-            lqb.setDatabaseChangeLogTable(tablesPrefix + "_changelog");
+            lqb.setDatabaseChangeLogLockTable(tablesPrefix + "changelog_lock");
+            lqb.setDatabaseChangeLogTable(tablesPrefix + "changelog");
         }
         if (TextUtil.isNotEmpty(appicationName)) {
             changeLogParams.put("application", appicationName);
@@ -156,8 +188,8 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
     private void doApplyMigration(SpringLiquibase lqb, Map<String, String> changeLogParams, HikariDataSource ds) {
         String schema = ds.getSchema();
         String dsName = ds.getPoolName().split("__")[0];
-        if (TenantId.DEFAULT.equals(dsName)) {
-            lqb.setContexts(TenantId.DEFAULT);
+        if (TenantId.DEFAULT_VALUE.equals(dsName)) {
+            lqb.setContexts(TenantId.DEFAULT_VALUE);
         } else {
             lqb.setContexts("tenant," + dsName.toLowerCase());
         }
@@ -168,7 +200,7 @@ public class TenantAwareDatasource extends AbstractRoutingDataSource implements 
         lqb.setChangeLogParameters(changeLogParams);
         try {
             lqb.afterPropertiesSet(); // Run migrations
-            LOG.info("Datasource %s bootstrapped successfully", dsName);
+            LOG.info("[datasource:%s] migration '%s' successfully applied", dsName, lqb.getChangeLog());
         } catch (LiquibaseException e) {
             throw new DatabaseException(e, "Migration failed for %s", schema);
         }

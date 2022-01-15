@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.jayway.jsonpath.JsonPath;
+import io.soffa.foundation.commons.JsonUtil;
 import lombok.SneakyThrows;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -111,8 +113,8 @@ public class HttpResult {
     }
 
     @SneakyThrows
-    public HttpResult json(Consumer<JsonAssert> tester) {
-        tester.accept(new JsonAssert(result));
+    public HttpResult json(Consumer<JsonExpect> tester) {
+        tester.accept(new JsonExpect(result));
         return this;
     }
 
@@ -125,6 +127,18 @@ public class HttpResult {
     public HttpResult hasJson(String path) {
         result.andExpect(jsonPath(path).exists());
         return this;
+    }
+
+    @SneakyThrows
+    public <T> T readJson(String path, Class<T> type) {
+        result.andExpect(jsonPath(path).exists());
+        Object value = JsonPath.read(string(), path);
+        return JsonUtil.convert(value, type);
+    }
+
+    @SneakyThrows
+    public String readJson(String path) {
+        return readJson(path, String.class);
     }
 
     @SneakyThrows

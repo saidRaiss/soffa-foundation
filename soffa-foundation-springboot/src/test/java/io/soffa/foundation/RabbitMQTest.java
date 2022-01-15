@@ -13,9 +13,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "foundation-amqp"})
 @SpringBootTest(properties = {
-    "app.amqp.enabled=true",
+    "app.amqp.addresses=embedded",
     "app.amqp.clients.t1=amqp://guest:guest@localhost:5672",
 })
 public class RabbitMQTest {

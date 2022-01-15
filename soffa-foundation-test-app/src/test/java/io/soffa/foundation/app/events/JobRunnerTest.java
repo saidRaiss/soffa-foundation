@@ -1,4 +1,4 @@
-package io.soffa.foundation.app;
+package io.soffa.foundation.app.events;
 
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.data.SysLogRepository;
@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ActiveProfiles("test")
 public class JobRunnerTest {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
     private JobManager jobs;
 
@@ -27,14 +28,12 @@ public class JobRunnerTest {
     @SneakyThrows
     @Test
     public void testJobRunner() {
-        TenantHolder.set("T1");
         assertNotNull(jobs);
-        long initialCount = sysLogs.count();
-        Job job = jobs.enqueue("testPing", new Event("PingAction").withTenant("T1"));
-        jobs.run(job);
-        TestUtil.awaitUntil(5, () -> {
-            long count = sysLogs.count();
-            return count >= initialCount + 1;
+        TenantHolder.use("T1", (t1) -> {
+            long initialCount = sysLogs.count();
+            Job job = jobs.enqueue("testPing", new Event("PingAction").withTenant(t1));
+            jobs.run(job);
+            TestUtil.awaitUntil(5, () -> initialCount + 1 == sysLogs.count());
         });
     }
 

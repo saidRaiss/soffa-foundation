@@ -6,6 +6,7 @@ import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.context.RequestContextHolder;
 import io.soffa.foundation.context.TenantHolder;
 import io.soffa.foundation.core.RequestContext;
+import io.soffa.foundation.core.model.TenantId;
 import io.soffa.foundation.core.model.Validatable;
 import io.soffa.foundation.data.SysLog;
 import io.soffa.foundation.data.SysLogRepository;
@@ -22,6 +23,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
@@ -33,8 +37,12 @@ public class DefaultActionDispatcher implements ActionDispatcher {
     private final Map<String, Object> actionsMapping = new HashMap<>();
     private final Map<String, Class<?>> inputTypes = new HashMap<>();
     private final SysLogRepository sysLogs;
+    private static final ScheduledExecutorService SC = Executors.newScheduledThreadPool(16);
 
-    public DefaultActionDispatcher(Set<Action<?, ?>> registry, Set<Action0<?>> registry0, SysLogRepository sysLogs) {
+
+    public DefaultActionDispatcher(Set<Action<?, ?>> registry,
+                                   Set<Action0<?>> registry0,
+                                   SysLogRepository sysLogs) {
         this.registry = registry;
         this.registry0 = registry0;
         this.sysLogs = sysLogs;
@@ -139,33 +147,32 @@ public class DefaultActionDispatcher implements ActionDispatcher {
 
             if (sysLogs != null) {
 
-                if (TenantHolder.isEmpty()) {
-                    LOG.warn("No tenant found in current context, skipping syslog persist.");
-                } else {
-
-                    Instant finish = Instant.now();
-                    Duration timeElapsed = Duration.between(start, finish);
-                    if (timeElapsed.getSeconds() >= SLOW_ACTION_THRESHOLD) {
-                        LOG.warn("action %s tooks more than %ds", action, timeElapsed.getSeconds());
-                    }
-
-                    TenantHolder.submit(() -> {
-                        SysLog log = new SysLog();
-                        log.setKind("action");
-                        log.setEvent(action);
-                        if (data != null) {
-                            log.setData(JsonUtil.serialize(data));
-                        }
-                        log.setContext(context);
-                        log.setError(error.get());
-                        log.setDuration(timeElapsed.toMillis());
+                Instant finish = Instant.now();
+                Duration timeElapsed = Duration.between(start, finish);
+                if (timeElapsed.getSeconds() >= SLOW_ACTION_THRESHOLD) {
+                    LOG.warn("action %s tooks more than %ds", action, timeElapsed.getSeconds());
+                }
+                final TenantId tenantId = context.getTenantId();
+                SC.schedule(() -> {
+                    TenantHolder.use(tenantId, () -> {
                         try {
+                            final SysLog log = new SysLog();
+                            log.setKind("action");
+                            log.setEvent(action);
+                            if (data != null) {
+                                log.setData(JsonUtil.serialize(data));
+                            }
+                            log.setContext(context);
+                            log.setError(error.get());
+                            log.setDuration(timeElapsed.toMillis());
+                            // log.setId(IdGenerator.shortUUID("slog_"));
+                            // log.setCreatedAt(new Date());
                             sysLogs.save(log);
                         } catch (Exception e) {
                             LOG.error(e, "failed to save sys log event: %s", e.getMessage());
                         }
                     });
-                }
+                }, 100, TimeUnit.MILLISECONDS);
             }
         }
     }

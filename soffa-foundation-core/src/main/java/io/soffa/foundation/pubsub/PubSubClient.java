@@ -2,14 +2,13 @@ package io.soffa.foundation.pubsub;
 
 
 import io.soffa.foundation.events.Event;
+import io.soffa.foundation.events.EventDispatcher;
 
-public interface PubSubClient {
+public interface PubSubClient extends EventDispatcher {
 
     void send(String client, String exchange, String routingKey, Event event);
 
     void send(String channel, Event event);
-
-    void broadcast(Event event);
 
     Object exchange(Event event);
 

@@ -57,7 +57,10 @@ public class DataSourceProperties {
             }
         }
 
-        JdbcInfo jdbcInfo = createJdbcUrl(provider, url, schema);
+        JdbcInfo jdbcInfo = createJdbcUrl(provider, url, schema, databaseUrl);
+        if (schema!=null && jdbcInfo.getUrl().startsWith("jdbc:h2")) {
+            schema = schema.toUpperCase();
+        }
         return DataSourceProperties.builder()
             .name(name)
             .username(jdbcInfo.getUsername())
@@ -69,13 +72,12 @@ public class DataSourceProperties {
     }
 
     @SneakyThrows
-    private static JdbcInfo createJdbcUrl(final String provider, final URL url, final String schema) {
+    private static JdbcInfo createJdbcUrl( String provider,  URL url,  String schema, String initialUrl) {
         UrlInfo urlInfo = UrlUtil.parse(url);
         if (TextUtil.isEmpty(urlInfo.getUsername())) {
-            LOG.warn("No username found in database url: %s", url);
-        }
-        if (TextUtil.isEmpty(urlInfo.getPassword())) {
-            LOG.warn("No password found in database url: %s", url);
+            LOG.warn("No username found in database url: %s", initialUrl);
+        }else if (TextUtil.isEmpty(urlInfo.getPassword())) {
+            LOG.warn("No password found in database url: %s", initialUrl);
         }
         StringBuilder jdbcUrl = new StringBuilder();
         String jdbcDriver;
@@ -84,11 +86,10 @@ public class DataSourceProperties {
         String sc = schema;
         if (H2.equals(provider)) {
             jdbcDriver = H2_DRIVER;
-            jdbcUrl.append(String.format("jdbc:h2:%1$s:%2$s;MODE=PostgreSQL;DB_CLOSE_ON_EXIT=FALSE", hostname, path));
+            jdbcUrl.append(String.format("jdbc:h2:%1$s:%2$s;MODE=PostgreSQL", hostname, path));
             if (TextUtil.isNotEmpty(schema)) {
                 sc = schema.toUpperCase();
-                createSchema(jdbcUrl.toString(), urlInfo.getUsername(), urlInfo.getPassword(), schema);
-                jdbcUrl.append(";INIT=CREATE SCHEMA IF NOT EXISTS ").append(schema);
+                jdbcUrl.append(";INIT=CREATE SCHEMA IF NOT EXISTS ").append(sc);
             }
         } else {
             jdbcDriver = "org.postgresql.Driver";
@@ -110,7 +111,12 @@ public class DataSourceProperties {
 
     private static void createSchema(String jdbcUrl, String username, String password, String schema) {
         // Automatic schema creation if possible
-        Jdbi jdbi = Jdbi.create(jdbcUrl, username, password);
+        Jdbi jdbi;
+        if (username != null) {
+            jdbi = Jdbi.create(jdbcUrl, username, password);
+        }else {
+            jdbi = Jdbi.create(jdbcUrl);
+        }
         jdbi.inTransaction(handle -> {
             handle.execute("CREATE SCHEMA IF NOT EXISTS " + schema);
             return null;

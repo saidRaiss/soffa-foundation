@@ -5,8 +5,6 @@ plugins {
 }
 
 
-
-
 dependencies {
     api(project(":soffa-foundation-core"))
     api("org.springframework.boot:spring-boot-starter-web") {
@@ -25,11 +23,17 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-thymeleaf")
     compileOnly("javax.servlet:javax.servlet-api:4.0.1")
     api("com.github.fridujo:rabbitmq-mock:1.1.1")
+    api("org.jobrunr:jobrunr:4.0.5") {
+        exclude(group = "com.zaxxer")
+    }
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("org.postgresql:postgresql:42.3.1")
-    // implementation("org.mockito:mockito-core:3.12.4")
-    api("org.springdoc:springdoc-openapi-ui:1.6.3")
-    implementation("org.springdoc:springdoc-openapi-security:1.6.3")
+    api("org.springdoc:springdoc-openapi-ui:1.6.3"){
+        exclude(group = "io.github.classgraph")
+    }
+    implementation("org.springdoc:springdoc-openapi-security:1.6.3"){
+        exclude(group = "io.github.classgraph")
+    }
     implementation("io.github.classgraph:classgraph:4.8.138")
     testImplementation(project(":soffa-foundation-test"))
 }

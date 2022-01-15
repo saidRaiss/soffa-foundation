@@ -6,59 +6,61 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
     logicalFilePath="platform/logs">
 
-    <changeSet id="202109211400_ApplicationLogs" author="gahissy.titus">
+    <changeSet id="20229106_ResetApplicationLogs" author="gahissy.titus">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="${table_prefix}sys_logs" />
+        </preConditions>
+        <dropTable tableName="${table_prefix}sys_logs" />
+        <dropTable tableName="${table_prefix}sys_logs_archive" />
+    </changeSet>
+
+    <changeSet id="20229106_CreateApplicationLogs" author="gahissy.titus">
 
         <createTable tableName="${table_prefix}sys_logs">
-            <column name="id" type="varchar">
-                <constraints primaryKey="true" nullable="false" unique="true"/>
+            <column name="id" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false" />
             </column>
-            <column name="event" type="varchar">
+            <column name="event" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="kind" type="varchar">
+            <column name="kind" type="varchar(32)">
                 <constraints nullable="false"/>
             </column>
-            <column name="data" type="varchar"/>
-            <column name="value" type="float8"/>
-            <column name="error" type="varchar"/>
-            <column name="error_details" type="varchar"/>
-            <column name="application" type="varchar"/>
-            <column name="user" type="varchar"/>
-            <column name="request_id" type="varchar"/>
-            <column name="span_id" type="varchar"/>
-            <column name="trace_id" type="varchar"/>
-            <column name="duration" type="varchar"/>
+            <column name="data" type="TEXT"/>
+            <column name="value_num" type="double"/>
+            <column name="error" type="varchar(128)"/>
+            <column name="error_details" type="TEXT"/>
+            <column name="application" type="varchar(64)"/>
+            <column name="user_id" type="varchar(64)"/>
+            <column name="request_id" type="varchar(64)"/>
+            <column name="span_id" type="varchar(64)"/>
+            <column name="trace_id" type="varchar(64)"/>
+            <column name="duration" type="integer"/>
             <column name="created_at" type="timestamp"/>
         </createTable>
 
         <createTable tableName="${table_prefix}sys_logs_archive">
-            <column name="id" type="varchar">
-                <constraints primaryKey="true" nullable="false" unique="true"/>
+            <column name="id" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="event" type="varchar">
+            <column name="event" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
-            <column name="kind" type="varchar">
+            <column name="kind" type="varchar(32)">
                 <constraints nullable="false"/>
             </column>
-            <column name="data" type="varchar"/>
-            <column name="value" type="float8"/>
-            <column name="application" type="varchar"/>
-            <column name="user" type="varchar"/>
-            <column name="request_id" type="varchar"/>
-            <column name="span_id" type="varchar"/>
-            <column name="trace_id" type="varchar"/>
-            <column name="duration" type="varchar"/>
-            <column name="error" type="varchar"/>
-            <column name="error_details" type="varchar"/>
+            <column name="data" type="TEXT"/>
+            <column name="value_num" type="double"/>
+            <column name="error" type="varchar(128)"/>
+            <column name="error_details" type="TEXT"/>
+            <column name="application" type="varchar(64)"/>
+            <column name="user_id" type="varchar(64)"/>
+            <column name="request_id" type="varchar(64)"/>
+            <column name="span_id" type="varchar(64)"/>
+            <column name="trace_id" type="varchar(64)"/>
+            <column name="duration" type="integer"/>
             <column name="created_at" type="timestamp"/>
         </createTable>
-
-    </changeSet>
-
-    <changeSet id="202110121640_ChangeUserColumn" author="gahissy.titus">
-        <renameColumn tableName="${table_prefix}sys_logs" oldColumnName="user" newColumnName="user_id"/>
-        <renameColumn tableName="${table_prefix}sys_logs_archive" oldColumnName="user" newColumnName="user_id"/>
 
     </changeSet>
 

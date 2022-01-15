@@ -1,6 +1,6 @@
 package io.soffa.foundation.spring.config;
 
-import io.soffa.foundation.commons.jwt.DefaultJwtEncoder;
+import io.soffa.foundation.commons.jwt.DefaultJwtProcessor;
 import io.soffa.foundation.commons.jwt.JwtEncoderConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -46,7 +46,8 @@ public class SecurityBeansFactory {
 
     @Bean
     @ConditionalOnBean(JwtEncoderConfig.class)
-    public DefaultJwtEncoder createJwtEncoder(JwtEncoderConfig config) {
-        return new DefaultJwtEncoder(config);
+    public DefaultJwtProcessor createJwtEncoder(JwtEncoderConfig config) {
+        return new DefaultJwtProcessor(config);
     }
+
 }

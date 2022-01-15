@@ -5,10 +5,12 @@ plugins {
 }
 
 dependencies {
+    compileOnly(project(":soffa-foundation-core"))
     // api("org.springframework:spring-test")
     api("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "com.vaadin.external.google")
     }
+
 
     compileOnly("org.springframework.boot:spring-boot-starter-web")
     api("com.h2database:h2:1.4.200")

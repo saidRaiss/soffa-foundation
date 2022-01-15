@@ -14,7 +14,7 @@ public class CustomPhysicalNamingStrategy extends CamelCaseToUnderscoresNamingSt
         if (TextUtil.isEmpty(tablePrefix)) {
             return name;
         }
-        String tableName = tablePrefix + "_" + name;
+        String tableName = tablePrefix + name;
         return new Identifier(tableName, false);
     }
 

@@ -31,6 +31,7 @@ public class ApplicationTest {
             .header("Access-Control-Request-Method", "GET")
             .header("Origin", "https://www.someurl.com")
             .expect().isOK().json("$.status", "UP");
+
     }
 
     @Test
@@ -42,6 +43,13 @@ public class ApplicationTest {
             header("X-TraceId", IdGenerator.shortUUID("trace-")).
             header("X-SpanId", IdGenerator.shortUUID("span-")).
             expect().isOK().json("$.value", "PONG");
+
+
+        test.get("/ping")
+            .basicAuth("foo", "bar")
+            .header("X-Application", "TestApp")
+            .header("X-TenantId", "T1")
+            .expect().isOK();
     }
 
     @Test

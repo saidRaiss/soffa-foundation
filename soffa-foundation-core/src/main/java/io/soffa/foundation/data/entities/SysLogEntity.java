@@ -1,11 +1,11 @@
 package io.soffa.foundation.data.entities;
 
+import io.soffa.foundation.commons.BeanUtil;
 import io.soffa.foundation.commons.IdGenerator;
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.data.SysLog;
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.apache.commons.beanutils.BeanUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -20,24 +20,22 @@ public class SysLogEntity {
     private String kind;
     private String event;
     private String data;
+    @Column(name = "value_num")
     private Float value;
     private String requestId;
     private String spanId;
     private String traceId;
-    @Column(name = "user_id")
-    private String user;
+    private String userId;
     private String application;
     private long duration;
     private String error;
     private String errorDetails;
-    @Temporal(TemporalType.TIME)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
     @SneakyThrows
-    public static SysLogEntity fromDomain(SysLog model) {
-        SysLogEntity entity = new SysLogEntity();
-        BeanUtils.copyProperties(entity, model);
-        return entity;
+    public static SysLogEntity of(SysLog model) {
+        return BeanUtil.copyProperties(model, new SysLogEntity());
     }
 
     @PrePersist
@@ -52,8 +50,6 @@ public class SysLogEntity {
 
     @SneakyThrows
     public SysLog toDomain() {
-        SysLog domain = new SysLog();
-        BeanUtils.copyProperties(domain, this);
-        return domain;
+        return BeanUtil.copyProperties(this, new SysLog());
     }
 }

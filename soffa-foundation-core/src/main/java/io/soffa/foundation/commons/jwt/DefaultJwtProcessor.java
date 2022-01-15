@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Data
 @AllArgsConstructor
-public class DefaultJwtEncoder implements JwtEncoder, JwtDecoder {
+public class DefaultJwtProcessor implements JwtEncoder, JwtDecoder {
 
     private static final Logger LOG = Logger.get(JwtJwksDecoder.class);
     private JwtEncoderConfig config;

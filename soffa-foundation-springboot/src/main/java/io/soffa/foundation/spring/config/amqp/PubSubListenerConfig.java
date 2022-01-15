@@ -48,13 +48,15 @@ public class PubSubListenerConfig {
             LOG.error("[amqp] null event definition received");
             return;
         }
-        RequestContextHolder.set(event.getContext());
         try {
+            RequestContextHolder.set(event.getContext());
             listener.handle(event);
             channel.basicAck(tag, false);
         } catch (Exception e) {
             LOG.error("[amqp] failed to process event %s (%s) -- %s", event.getAction(), event.getId());
             channel.basicNack(tag, false, true);
+        } finally {
+            RequestContextHolder.clear();
         }
     }
 

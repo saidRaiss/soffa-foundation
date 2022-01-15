@@ -1,6 +1,8 @@
 package io.soffa.foundation.spring.config;
 
 import io.soffa.foundation.commons.jwt.JwtDecoder;
+import io.soffa.foundation.security.AuthManager;
+import io.soffa.foundation.security.DefaultAuthorizationManager;
 import io.soffa.foundation.spring.RequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -17,18 +19,22 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtDecoder jwtDecoder;
+    private AuthManager authManager;
 
-    public SecurityConfig(@Autowired(required = false) JwtDecoder jwtDecoder) {
+    public SecurityConfig(
+        @Autowired(required = false) AuthManager authManager,
+        @Autowired(required = false) JwtDecoder jwtDecoder) {
         super();
-        this.jwtDecoder = jwtDecoder;
+        this.authManager = authManager;
+        if (authManager == null && jwtDecoder != null) {
+            this.authManager = new DefaultAuthorizationManager(jwtDecoder);
+        }
     }
 
     @Bean
     @ConditionalOnMissingBean(CorsFilter.class)
     public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source =
-            new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOriginPattern("*");
@@ -50,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/actuator/**").permitAll()
             .antMatchers("/**").permitAll()
             .and().addFilterBefore(
-                new RequestFilter(jwtDecoder),
+                new RequestFilter(authManager),
                 UsernamePasswordAuthenticationFilter.class
             );
     }

@@ -27,8 +27,9 @@ public class OpenAPIDesc {
     @Data
     @NoArgsConstructor
     public static class Security {
-        private OAuth2 oauth2;
-        private boolean jwtBearer;
+        private OAuth2 oAuth2;
+        private boolean bearerAuth;
+        private boolean basicAuth;
     }
 
     @Data

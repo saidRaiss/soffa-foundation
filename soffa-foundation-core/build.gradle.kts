@@ -18,14 +18,15 @@ dependencies {
     api("javax.transaction:javax.transaction-api:1.3")
     api("org.hibernate.validator:hibernate-validator-annotation-processor:7.0.1.Final")
     api("org.hibernate.validator:hibernate-validator:7.0.1.Final")
-    api("org.checkerframework:checker-qual:3.21.0")
-    api("com.amazonaws:aws-java-sdk-s3:1.12.131")
+    api("org.checkerframework:checker-qual:3.21.1")
+    api("com.amazonaws:aws-java-sdk-s3:1.12.138")
+    api("commons-validator:commons-validator:1.7")
     implementation("com.auth0:java-jwt:3.18.2")
     api("org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.2.Final")
-    compileOnly("org.jobrunr:jobrunr:4.0.5") {
+    compileOnly("org.jobrunr:jobrunr:4.0.6") {
         exclude(group = "com.zaxxer")
     }
-    api("org.jdbi:jdbi3-core:3.25.0") {
+    api("org.jdbi:jdbi3-core:3.27.0") {
         exclude(group = "com.github.ben-manes.caffeine")
     }
     @Suppress("GradlePackageUpdate")

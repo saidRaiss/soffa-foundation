@@ -3,7 +3,6 @@ package io.soffa.foundation.data;
 import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.commons.UrlInfo;
-import io.soffa.foundation.commons.UrlUtil;
 import io.soffa.foundation.exceptions.TechnicalException;
 import lombok.Builder;
 import lombok.Data;
@@ -73,7 +72,7 @@ public class DataSourceProperties {
 
     @SneakyThrows
     private static JdbcInfo createJdbcUrl( String provider,  URL url,  String schema, String initialUrl) {
-        UrlInfo urlInfo = UrlUtil.parse(url);
+        UrlInfo urlInfo = UrlInfo.parse(url);
         if (TextUtil.isEmpty(urlInfo.getUsername())) {
             LOG.warn("No username found in database url: %s", initialUrl);
         }else if (TextUtil.isEmpty(urlInfo.getPassword())) {

@@ -13,6 +13,7 @@ dependencies {
 
 
     compileOnly("org.springframework.boot:spring-boot-starter-web")
+    @Suppress("GradlePackageUpdate")
     api("com.h2database:h2:1.4.200")
     api("com.google.guava:guava:31.0.1-jre")
     @Suppress("GradlePackageUpdate")

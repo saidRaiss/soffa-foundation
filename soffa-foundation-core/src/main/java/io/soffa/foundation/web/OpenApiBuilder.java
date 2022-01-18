@@ -2,8 +2,9 @@ package io.soffa.foundation.web;
 
 import com.google.common.base.Preconditions;
 import io.soffa.foundation.commons.CollectionUtil;
+import io.soffa.foundation.commons.Logger;
 import io.soffa.foundation.commons.TextUtil;
-import io.soffa.foundation.core.ApiHeaders;
+import io.soffa.foundation.core.SecuritySchemes;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 public class OpenApiBuilder {
 
+    private static final Logger LOG = Logger.get("app");
     private final Components components = new Components();
     private final OpenAPIDesc desc;
 
@@ -31,7 +33,8 @@ public class OpenApiBuilder {
         api.setInfo(buildInfo());
         if (desc.getSecurity() != null) {
             buildOAuthSchemes();
-            buildJwtBearerScheme();
+            buildBearerScheme();
+            buildBasicAuthScheme();
         }
         buildParameters();
         api.setComponents(components);
@@ -51,15 +54,16 @@ public class OpenApiBuilder {
     }
 
     private void buildOAuthSchemes() {
-        if (desc.getSecurity().getOauth2() == null) {
+        if (desc.getSecurity().getOAuth2() == null) {
             return;
         }
+        LOG.info("[security] oAuth is enabled");
 
         Scopes scopes = new Scopes();
         int flows = 0;
         OAuthFlows oAuthFlows = new OAuthFlows();
 
-        OpenAPIDesc.OAuth2 oauth2 = desc.getSecurity().getOauth2();
+        OpenAPIDesc.OAuth2 oauth2 = desc.getSecurity().getOAuth2();
 
         if (oauth2.isAuthorizationCodeFlow()) {
             flows++;
@@ -70,7 +74,7 @@ public class OpenApiBuilder {
         }
 
         if (flows > 0) {
-            components.addSecuritySchemes(ApiHeaders.OAUTH2,
+            components.addSecuritySchemes(SecuritySchemes.OAUTH2,
                 new SecurityScheme()
                     .description("OAuth2 OpenID Connect")
                     .type(SecurityScheme.Type.OAUTH2)
@@ -79,15 +83,30 @@ public class OpenApiBuilder {
         }
     }
 
-    private void buildJwtBearerScheme() {
-        if (!desc.getSecurity().isJwtBearer()) {
+    private void buildBearerScheme() {
+        if (!desc.getSecurity().isBearerAuth()) {
             return;
         }
-        components.addSecuritySchemes(ApiHeaders.JWT,
+        LOG.info("[security] BearerAuth is enabled");
+        components.addSecuritySchemes(SecuritySchemes.BEARER_AUTH,
             new SecurityScheme()
-                .description("JWT Beader Auth")
+                .description("Bearer Auth")
                 .scheme("bearer")
                 .bearerFormat("Bearer [token]")
+                .type(SecurityScheme.Type.HTTP)
+        );
+
+    }
+
+    private void buildBasicAuthScheme() {
+        if (!desc.getSecurity().isBasicAuth()) {
+            return;
+        }
+        LOG.info("[security] BasicAuth is enabled");
+        components.addSecuritySchemes(SecuritySchemes.BASIC_AUTH,
+            new SecurityScheme()
+                .description("Basic Auth")
+                .scheme("basic")
                 .type(SecurityScheme.Type.HTTP)
         );
 

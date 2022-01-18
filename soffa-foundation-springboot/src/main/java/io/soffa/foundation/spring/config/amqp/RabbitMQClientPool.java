@@ -2,7 +2,6 @@ package io.soffa.foundation.spring.config.amqp;
 
 import io.soffa.foundation.commons.TextUtil;
 import io.soffa.foundation.commons.UrlInfo;
-import io.soffa.foundation.commons.UrlUtil;
 import io.soffa.foundation.exceptions.TechnicalException;
 import io.soffa.foundation.spring.config.amqp.model.RabbitMQProperties;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -44,7 +43,7 @@ public class RabbitMQClientPool {
         Set<String> addresses = new HashSet<>();
         UrlInfo firstAddress = null;
         for (String address : amqpurl.split(",")) {
-            UrlInfo url = UrlUtil.parse(address.trim());
+            UrlInfo url = UrlInfo.parse(address.trim());
             addresses.add(url.getHostnameWithPort());
             if (firstAddress == null) {
                 firstAddress = url;

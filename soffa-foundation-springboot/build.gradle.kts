@@ -23,7 +23,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-thymeleaf")
     compileOnly("javax.servlet:javax.servlet-api:4.0.1")
     api("com.github.fridujo:rabbitmq-mock:1.1.1")
-    api("org.jobrunr:jobrunr:4.0.5") {
+    api("org.jobrunr:jobrunr:4.0.6") {
         exclude(group = "com.zaxxer")
     }
     implementation("io.micrometer:micrometer-registry-prometheus")

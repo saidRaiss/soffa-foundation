@@ -7,6 +7,10 @@ public interface ApiHeaders {
     String TRACE_ID = "X-TraceId";
     String SPAN_ID = "X-SpanId";
 
-    String JWT = "JWT";
+    @Deprecated
+    String JWT = "BEARER_AUTH";
+    @Deprecated
+    String BASIC_AUTH = "BASIC_AUTH";
+    @Deprecated
     String OAUTH2 = "OAUTH2";
 }
